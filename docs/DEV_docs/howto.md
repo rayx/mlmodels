@@ -20,6 +20,7 @@ https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-do
 <br/>
 
 ## How to install mlmodels ?
+<details>
 There are two types of installations for ```mlmodels```.
 The first is a manual controlled installation, the second is an automatic shell installation.
 
@@ -35,7 +36,6 @@ scikit-learn==0.21.2
 numexpr>=2.6.8
 ```
 
-<details>
 
 ```bash
 Linux/MacOS
@@ -50,13 +50,15 @@ pip install -e .  -r requirements_wi.txt
 pip install   -r requirements_fake.txt
 ```
 
-</details>
+
 
 ### Automatic installation
 One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
 for an automatic installation.
 
 <br/>
+</details>
+
 
 ## How to check if mlmodels works ?
 Basic testing can be done with command line tool ```ml_test```.
@@ -105,7 +107,6 @@ Basic testing can be done with command line tool ```ml_test```.
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_pullrequest)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
-</details>
 
 You can then run basic codes and models to verify correct installation and
 work environment.
@@ -118,9 +119,11 @@ python model_keras/textcnn.py
 ```
 
 <br/>
+</details>
+
 
 ## How to check if one model works ?
-
+<details>
 ### Run Model
 Run/Test newly added model on your local machine or on 
 [Gitpod](https://gitpod.io/) or [Colab](https://colab.research.google.com/).
@@ -132,6 +135,9 @@ source activate py36
 cd mlmodels
 python model_XXXX/yyyy.py  
 ```
+</details>
+
+
 
 ### Check Your Test Runs
 https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
