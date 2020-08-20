@@ -5,7 +5,7 @@ name: test_json
 on:
   push:
     branches: 
-      dev
+      dev2
       
   schedule:
     # * is a special character in YAML so you have to quote this string
@@ -92,7 +92,8 @@ jobs:
 
     ########  Test running for ALL Command Line
     - name: cli_test
-      run: ml_test --do test_json_all     2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_json/log_json_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      # run: ml_test --do test_json_all     2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_json/log_json_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      run: ml_test --do test_json_all     2>&1 | tee  cd /home/runner/work/mlmodels/mlmodels_store/log_json/log_json.py
 
 
 
@@ -109,7 +110,7 @@ jobs:
 
 
     - name: log_gitcommit
-      run: ml_test --do log_remote_push
+      run: ml_test --do log_remote_push  --name test_json.yml
 
 
 

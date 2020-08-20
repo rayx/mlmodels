@@ -4,6 +4,11 @@ mlflow==1.7.1
 
 
 
+### JSON with Cmment embedded
+jsoncomment==0.4.2
+
+
+
 ### TF
 tensorflow-datasets==3.0
 
@@ -11,9 +16,7 @@ tensorflow-datasets==3.0
 ### Lightning for GPU/TPu training
 pytorch-lightning==0.7.3
 
-## Required for gluon_FB prophet
-fbprophet==0.6
-convertdate>=2.1.2
+
 
 
 ### Computer Vision
@@ -37,10 +40,13 @@ tensorboardX
 
 
 
-############################
+#####Gluon#######################
 mxnet==1.6.0
 gluonts==0.4.2
+pydantic<=1.4  ### issue with DeepAR
 autogluon==0.0.5
+
+
 lightgbm==2.3.0
 
 
@@ -83,7 +89,9 @@ keras-mdn-layer<=0.2.1
 
 
 
-
+## Required for gluon_FB prophet
+fbprophet==0.6
+convertdate>=2.1.2
 
 
 

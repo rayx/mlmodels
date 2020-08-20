@@ -10,7 +10,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     ### Every 3 hours
-    - cron:  '0 */1 * * *'      
+    - cron:  '0 */4 * * *'      
     # - cron:  '*/1 * * * *'   
  
 jobs:
@@ -89,11 +89,12 @@ jobs:
 
     ########  Test running 
     - name: ml_test
-      run: ml_test  --do test_benchmark     2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_benchmark/log_benchmark_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      # run: ml_test  --do test_benchmark     2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_benchmark/log_benchmark_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      run: ml_test  --do test_benchmark     2>&1 | tee  cd /home/runner/work/mlmodels/mlmodels_store/log_benchmark/log_benchmark.py
 
       
         
 
     - name: log_gitcommit
-      run: ml_test --do log_remote_push
+      run: ml_test --do log_remote_push  --name test_benchmark.yml
 

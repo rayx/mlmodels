@@ -93,7 +93,8 @@ jobs:
     ########  Test running for ALL Command Line
     # - uses: franzdiebold@github-env-vars-action@v1.0.0
     - name: cli_test
-      run: ml_test --do test_cli   2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_test_cli/log_cli_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      # run: ml_test --do test_cli   2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_test_cli/log_cli_$(date '+%Y-%m-%d-%H-%M')_$GITHUB_SHA.py
+      run: ml_test --do test_cli   2>&1 | tee cd /home/runner/work/mlmodels/mlmodels_store/log_test_cli/log_cli.py
 
 
     #       run: ml_test --do test_cli   2>&1 | tee -a  cd /home/runner/work/mlmodels/mlmodels_store/log_test_cli/log_$(GITHUB_SHA)_$(date '+%Y-%m-%d_%H-%M-%S-%3N').py
@@ -110,7 +111,7 @@ jobs:
 
 
     - name: log_gitcommit
-      run: ml_test --do log_remote_push
+      run: ml_test --do log_remote_push --name test_cli.yml
 
 
 

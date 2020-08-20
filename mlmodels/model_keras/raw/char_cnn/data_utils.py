@@ -4,6 +4,7 @@ import re
 import csv
 from keras.preprocessing.text import Tokenizer
 
+
 class Data(object):
     """
     Class to handle loading and processing of raw datasets.
@@ -68,8 +69,39 @@ class Data(object):
             classes.append(one_hot[c])
         
         return np.asarray(batch_indices, dtype='int64'), np.asarray(classes)
+
+    def compute(self, input, *args, **kwargs):
+        X, y = np.array(input[kwargs.get("colX", "colX")].values), np.array(input[kwargs.get("coly", "coly")].values)
+        data = []
+        for idx, x in enumerate(X):
+            data.append((int(y[idx]), x))
+        self.data = np.array(data)
+
+    def get_data(self):
+        """
+        Return all loaded data from data variable.
+
+        Returns:
+            (np.ndarray) Data transformed from raw to indexed form with associated one-hot label.
+
+        """
+        data_size = len(self.data)
+        start_index = 0
+        end_index = data_size
+        batch_texts = self.data[start_index:end_index]
+        batch_indices = []
+        one_hot = np.eye(self.no_of_classes, dtype='int64')
+        classes = []
+        for c, s in batch_texts:
+            batch_indices.append(self.str_to_indexes(s))
+            c = int(c) - 1
+            classes.append(one_hot[c])
+
+        return np.asarray(batch_indices, dtype='int64'), np.asarray(classes)
+
     def get_all_data_npz(self):
         with np.load(self.data_source, allow_pickle=True) as f:
+            print("f: ", f)
             xs, labels = f['x'], f['y']
         length = xs.size
         size_train = int(length * .8)

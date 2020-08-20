@@ -5,7 +5,7 @@ import fnmatch
 
 # import toml
 from pathlib import Path
-import json
+from jsoncomment import JsonComment ; json = JsonComment()
 
 import importlib
 from inspect import getmembers
@@ -229,7 +229,7 @@ def test_module(model_uri="model_tf/1_lstm.py", data_path="dataset/", pars_choic
 
 ####################################################################################################
 def config_load_root():
-    import json
+    from jsoncomment import JsonComment ; json = JsonComment()
     path_user = os.path.expanduser('~')
     path_config = path_user + "/.mlmodels/config.json"
 
@@ -258,7 +258,7 @@ def config_set(ddict2):
 
 def params_json_load(path, config_mode="test", 
                      tlist= [ "model_pars", "data_pars", "compute_pars", "out_pars"] ):
-    import json
+    from jsoncomment import JsonComment ; json = JsonComment()
     pars = json.load(open(path, mode="r"))
     pars = pars[config_mode]
 
@@ -277,7 +277,7 @@ def params_json_load(path, config_mode="test",
 
 def load_config(args, config_file, config_mode, verbose=0):
     ##### Load file dict_pars as dict namespace #############################
-    import json
+    from jsoncomment import JsonComment ; json = JsonComment()
     print(config_file) if verbose else None
 
     try:
@@ -433,9 +433,9 @@ def save(model=None, session=None, save_pars=None):
 
 
 def load_tf(load_pars=""):
-  """
-  https://www.mlflow.org/docs/latest/python_api/mlflow.tensorflow.html#
-  https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/Saver#restore
+    """
+    https://www.mlflow.org/docs/latest/python_api/mlflow.tensorflow.html#
+    https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/Saver#restore
 
            import tensorflow as tf
 
@@ -463,47 +463,56 @@ def load_tf(load_pars=""):
         ...
 
 
- """
-  import tensorflow as tf
-  # tf_sess = tf.compat.v1.Session() # tf.Session()
-  model_path = os.path.join(load_pars['path'], "model")
-  full_name  = model_path + "/model.ckpt"
-  
-  ## Need Fake
-  _ = tf.Variable(initial_value='xxxxxx_fake')
-  saver      = tf.compat.v1.train.Saver()  
+    """
+    import tensorflow as tf
+    sess =  tf.compat.v1.Session() # tf.Session()
+    model_path = os.path.join(load_pars['path'], "model")
+    
+    full_name  = model_path + "/model.ckpt"
+    # saver = tf.train.import_meta_graph(model_path + '/model.ckpt.meta')
 
-  with  tf.compat.v1.Session() as sess:
-      saver.restore(sess,  full_name)
-  return sess
+
+    ## Need Fake
+    #_ = tf.Variable(initial_value='xxxxxx_fake')
+    #saver      = tf.compat.v1.train.Saver()  
+
+    # with  tf.compat.v1.Session() as sess:
+    saver = tf.train.Saver()
+    # saver = tf.train.import_meta_graph(model_path + '/model.ckpt.meta')
+    saver.restore(sess,  full_name)
+    #saver.restore(sess, tf.train.latest_checkpoint(model_path+'/'))
+    print(f"Loaded saved model from {model_path}")
+    return sess
+
 
 
 
 def save_tf(model=None, sess=None, save_pars= None):
-  """
-    # Add ops to save and restore all the variables.
-      saver = tf.train.Saver()
+    """
+        # Add ops to save and restore all the variables.
+        saver = tf.train.Saver()
 
-    # Later, launch the model, initialize the variables, do some work, and save the
-    # variables to disk.
-   with tf.Session() as sess:
-  sess.run(init_op)
-  # Do some work with the model.
-  inc_v1.op.run()
-  dec_v2.op.run()
-  # Save the variables to disk.
-  save_path = saver.save(sess, "/tmp/model.ckpt")
-  print("Model saved in path: %s" % save_path)
+        # Later, launch the model, initialize the variables, do some work, and save the
+        # variables to disk.
+    with tf.Session() as sess:
+    sess.run(init_op)
+    # Do some work with the model.
+    inc_v1.op.run()
+    dec_v2.op.run()
+    # Save the variables to disk.
+    save_path = saver.save(sess, "/tmp/model.ckpt")
+    print("Model saved in path: %s" % save_path)
+    
+    
+    """
+    # https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/Saver#restore  
+    import tensorflow as tf
+    saver = tf.compat.v1.train.Saver()
+    model_path = save_pars['path']  + "/model/"
+    os.makedirs(model_path, exist_ok=True)
+    save_path = saver.save(sess, model_path + "/model.ckpt")
+    print("Model saved in path: %s" % save_path)
   
-  
-  """
-  # https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/Saver#restore  
-  import tensorflow as tf
-  saver = tf.compat.v1.train.Saver()
-  model_path = save_pars['path']  + "/model/"
-  os.makedirs(model_path, exist_ok=True)
-  save_path = saver.save(sess, model_path + "/model.ckpt")
-  print("Model saved in path: %s" % save_path)
 
 
 
@@ -638,6 +647,49 @@ def load_function(package="mlmodels.util", name="path_norm"):
 
 
 
+def load_function_uri(uri_name="path_norm"):
+    """
+    #load dynamically function from URI
+
+    ###### Pandas CSV case : Custom MLMODELS One
+    #"dataset"        : "mlmodels.preprocess.generic:pandasDataset"
+
+    ###### External File processor :
+    #"dataset"        : "MyFolder/preprocess/myfile.py:pandasDataset"
+
+
+    """
+    
+    import importlib, sys
+    from pathlib import Path
+    pkg = uri_name.split(":")
+
+    assert len(pkg) > 1, "  Missing :   in  uri_name module_name:function_or_class "
+    package, name = pkg[0], pkg[1]
+    
+    try:
+        #### Import from package mlmodels sub-folder
+        return  getattr(importlib.import_module(package), name)
+
+    except Exception as e1:
+        try:
+            ### Add Folder to Path and Load absoluate path module
+            path_parent = str(Path(package).parent.parent.absolute())
+            sys.path.append(path_parent)
+            #log(path_parent)
+
+            #### import Absolute Path model_tf.1_lstm
+            model_name   = Path(package).stem  # remove .py
+            package_name = str(Path(package).parts[-2]) + "." + str(model_name)
+            #log(package_name, model_name)
+            return  getattr(importlib.import_module(package_name), name)
+
+        except Exception as e2:
+            raise NameError(f"Module {pkg} notfound, {e1}, {e2}")
+
+
+
+
 def load_callable_from_uri(uri):
     assert(len(uri)>0 and ('::' in uri or '.' in uri))
     if '::' in uri:
@@ -668,6 +720,16 @@ def load_callable_from_dict(function_dict, return_other_keys=False):
     else:
         return func, arg, function_dict
     
+
+
+
+
+
+
+
+
+
+
 
 """
 def path_local_setup(current_file=None, out_folder="", sublevel=0, data_path="dataset/"):

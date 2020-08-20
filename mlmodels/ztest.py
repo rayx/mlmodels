@@ -11,7 +11,7 @@ import copy
 import math
 import os
 from collections import Counter, OrderedDict
-import json
+from jsoncomment import JsonComment ; json = JsonComment()
 from pathlib import Path
 import numpy as np
 from time import sleep
@@ -39,8 +39,8 @@ def os_bash(cmd):
 
 
 
-def log_separator():
-   print("\n" * 5, "*" * 120, flush=True )
+def log_separator(space=140):
+   print("\n" * 5, "*" * space, flush=True )
 
 
 def log_info_repo(arg=None):
@@ -72,6 +72,8 @@ def log_info_repo(arg=None):
 
    url_branch_file2 = f"https://github.com/{repo}/tree/{branch}/" 
 
+   url_debugger     = f"https://gitpod.io/#https://github.com/{repo}/tree/{sha}"
+           
 
    # print(locals()["github_repo_url"] )
    ### Export
@@ -85,9 +87,16 @@ def log_info_repo(arg=None):
    print("\n" * 1, "******** GITHUB_REPO_BRANCH : "   + url_branch_file2 , flush=True)
    print("\n" * 1, "******** GITHUB_REPO_URL : "   + github_repo_url , flush=True)
    print("\n" * 1, "******** GITHUB_COMMIT_URL : " + f"https://github.com/{repo}/commit/{sha}" , flush=True)
+           
+   print("\n" * 1, "******** Click here for Online DEBUGGER : " + url_debugger , flush=True)
+
    print("\n" * 1, "*" * 120 )
 
+   # os.system("pip3 list ") 
+   # print("\n" * 1, "*" * 120 )
+
    return dd
+
 
 
 
@@ -140,13 +149,16 @@ def log_remote_start(arg=None):
 
 
 def log_remote_push(arg=None):
-   ### Pushing to mlmodels_store 
-   tag ="ml_store"
+   ### Pushing to mlmodels_store   with --force
+   # tag ="ml_store" & arg.name
+   tag = "m_" + str(arg.name)
    s = f""" cd /home/runner/work/mlmodels/mlmodels_store/
+           pip3 freeze > deps.txt
+           ls
            git config --local user.email "noelkev0@gmail.com" && git config --local user.name "arita37"        
-           git pull --all   
-           ls &&  git add --all &&  git commit -m "{tag}" 
-           git push --all
+           git add --all &&  git commit -m "{tag}" 
+           git pull --all     
+           git push --all -f
            cd /home/runner/work/mlmodels/mlmodels/
        """
 
@@ -156,7 +168,41 @@ def log_remote_push(arg=None):
 
 
 
+
 ####################################################################################################
+def test_functions(arg=None):
+  from mlmodels.util import load_function_uri
+
+  path = path_norm("dataset/test_json/test_functions.json")
+  dd   = json.load(open( path ))['test']
+  
+  for p in dd  :
+     try :
+         log("\n\n","#"*20, p)
+
+         myfun = load_function_uri( p['uri'])
+         log(myfun)
+
+         w  = p.get('args', []) 
+         kw = p.get('kw_args', {} )
+         
+         if len(kw) == 0 and len(w) == 0   : log( myfun())
+
+         elif  len(kw) > 0 and len(w) > 0  : log( myfun( *w,  ** kw ))
+
+         elif  len(kw) > 0 and len(w) == 0 : log( myfun( ** kw ))
+
+         elif  len(kw) == 0 and len(w) > 0 : log( myfun( *w ))
+                     
+            
+     except Exception as e:
+        log(e, p )    
+
+
+
+
+
+
 def test_model_structure():
     log("os.getcwd", os.getcwd())
     log(mlmodels)
@@ -215,7 +261,7 @@ def test_jupyter(arg=None, config_mode="test_all"):
     path = str( os.path.join(root, "example/") )
     print(path)
 
-    print("############ List of files ################################")
+    print("############ List of files #########################################")
     #model_list = get_recursive_files2(root, r'/*/*.ipynb')
     model_list  = get_recursive_files2(path, r'*.ipynb')
     model_list2 = get_recursive_files2(path, r'*.py')
@@ -230,17 +276,40 @@ def test_jupyter(arg=None, config_mode="test_all"):
     block_list = [ "ipynb_checkpoints" ] 
     model_list = [t for t in model_list if t not in block_list]
 
-    test_list = [f"ipython {t}"  for  t in model_list]
+    test_list = [f"{t}"  for  t in model_list]
     print(test_list, flush=True) 
 
     log_separator()
     print("############ Running Jupyter files ################################")
-    for cmd in test_list:
-        log_separator()
-        print( cmd.replace("/home/runner/work/mlmodels/mlmodels/", git.get("url_branch_file", "")), "\n", flush=True)
-        os.system(cmd)
+    for file in test_list:
+        try : 
+          log_separator()
+          print( file.replace("/home/runner/work/mlmodels/mlmodels/", git.get("url_branch_file", "")), "\n", flush=True)
+          if ".ipynb" in file :
+            os.system( f"jupyter nbconvert --to script  {file}")
+
+          file2 = file.replace(".ipynb", ".py")
+          os_file_replace(file2, s1="get_ipython", s2="# get_ipython")   #### Jupyter Flag
+          os.system( f"python {file2}")
+        except :
+          pass
 
 
+def os_file_replace(filename, s1="", s2=""):
+  try :
+    # Read in the file
+    with open(filename, 'r') as file :
+      filedata = file.read()
+
+    # Replace the target string
+    filedata = filedata.replace(s1, s2)
+
+    # Write the file out again
+    with open(filename, 'w') as file:
+      file.write(filedata)
+
+  except :
+    print("No replacement")
 
 
 
@@ -366,7 +435,11 @@ def test_dataloader(arg=None):
 
     log("############Check model ################################")
     path = path.replace("\\", "//")
-    test_list = [ f"python {path}/dataloader.py --do test "   ,
+    test_list = [
+       f"python {path}/dataloader.py --do test "   ,
+    
+       f"python {path}/preprocess/generic.py --do test "   , 
+
     ]
 
     for cmd in test_list:
@@ -521,6 +594,9 @@ def cli_load_arguments(config_file=None):
     add("--config_mode" , default="test"      , help="test/ prod /uat")
     add("--log_file"    , help="log.log")
     add("--folder"      , default=None        , help="test")
+
+    add("--name"      , default="ml_store"        , help="test")
+
 
     ##### model pars
 

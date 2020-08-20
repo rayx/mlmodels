@@ -18,7 +18,7 @@ models.py   #### Generic Interface
 import argparse
 import glob
 import inspect
-import json
+from jsoncomment import JsonComment ; json = JsonComment()
 import os
 import re
 import sys
@@ -244,7 +244,7 @@ def test_api(model_uri="model_xxxx/yyyy.py", param_pars=None):
     # load_global(save_pars)
 
 
-def test_module(model_uri="model_xxxx/yyyy.py", param_pars=None):
+def test_module(model_uri="model_xxxx/yyyy.py", param_pars=None, fittable = True):
     # Using local method only
 
     log("#### Module init   ############################################")
@@ -261,14 +261,17 @@ def test_module(model_uri="model_xxxx/yyyy.py", param_pars=None):
     log(model)
 
     log("#### Fit   ########################################################")
-    model, sess = module.fit(model, data_pars, compute_pars, out_pars)
+    sess = None
+    if fittable:
+        model, sess = module.fit(model, data_pars = data_pars, compute_pars = compute_pars, out_pars = out_pars)
 
     log("#### Predict   ####################################################")
     ypred = module.predict(model, sess, data_pars, compute_pars, out_pars)
     print(ypred)
 
     log("#### Get  metrics   ################################################")
-    metrics_val = module.fit_metrics(model, data_pars, compute_pars, out_pars)
+    if fittable:
+        metrics_val = module.fit_metrics(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
     log("#### Save   ########################################################")
     # save_pars = {}

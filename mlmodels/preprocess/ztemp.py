@@ -502,7 +502,7 @@ import os
 import sys
 import inspect
 from urllib.parse import urlparse
-import json
+from jsoncomment import JsonComment ; json = JsonComment()
 from importlib import import_module
 import pandas as pd
 import numpy as np
@@ -972,11 +972,11 @@ if __name__ == "__main__":
     #   "data_path": f"dataset/json_/namentity_crm_bilstm_dataloader.json",
     # }
     #
-    # test_module("model_keras/namentity_crm_bilstm_dataloader.py", param_pars)
+    # test_module("model_keras/dataloader/namentity_crm_bilstm.py", param_pars)
 
     # param_pars = {
     #    "choice": "json",
     #    "config_mode": "test",
     #    "data_path": f"dataset/json_/textcnn_dataloader.json",
     # }
-    # test_module("model_tch/textcnn_dataloader.py", param_pars)
+    # test_module("model_tch/textcnn.py", param_pars)

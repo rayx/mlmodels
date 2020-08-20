@@ -2,11 +2,10 @@
 import os
 import sys
 import numpy as np, pandas as pd
-
+import gdown
+from tempfile import gettempdir
 
 from mlmodels.util import os_package_root_path, path_norm
-
-
 
 
 def tf_dataset(dataset_pars):
@@ -102,90 +101,41 @@ def tf_dataset(dataset_pars):
         
                 
 
+def download_googledrive(file_list, **kw):
+    """
+      Use in dataloader with
+         "uri": mlmodels.data:donwload_googledrive
+         file_list = [ {  "fileid": "1-K72L8aQPsl2qt_uBF-kzbai3TYG6Qg4",  "path_target":  "ztest/covid19/test.json"},
+                        {  "fileid" :  "GOOGLE URL ID"   , "path_target":  "dataset/test.json"},
+                 ]
 
-
+    """
+    import random
+    # file_list   = kw.get("file_list")
+    target_list = []
     
-"""
+    for d in file_list :
+      fileid = d["fileid"]
+      target = path_norm( d.get("path_target", "ztest/googlefile_" + str(random.randrange(1000) )  )
+      
+      """   
+      if not target:
+         tmp = os.path.join(gettempdir(), '.{}'.format(hash(os.times())))
+         os.makedirs(tmp)
+         target = tmp
+      """                                
+      if not os.path.exists(os.path.dirname(target)):
+         os.makedirs(os.path.dirname(target), exist_ok=True)
 
-Dataset from pytorch Vision
-https://pytorch.org/docs/master/torchvision/datasets.html#fashion-mnist
-
-
-
-Dataset from Torch Text
-https://pytorch.org/text/datasets.html
-
-
-
-All dataset
-https://en.wikipedia.org/wiki/List_of_datasets_for_machine-learning_research
-
-
-
-
-Time series
-https://gluon-ts.mxnet.io/api/gluonts/gluonts.dataset.repository.datasets.html
+      url = f'https://drive.google.com/uc?id={fileid}'
+      gdown.download(url, target, quiet=False)
+      target_list.append( target  )
+                         
+    return target_list
 
 
-https://github.com/zalandoresearch/fashion-mnist
-
-
-
-
-
-####LudWig
-
-https://blog.dominodatalab.com/a-practitioners-guide-to-deep-learning-with-ludwig/
-
-
-
-
-
-
-class CustomDatasetFromCSV(Dataset):
-    def __init__(self, csv_path, height, width, transforms=None):
-        
-        Args:
-            csv_path (string): path to csv file
-            height (int): image height
-            width (int): image width
-            transform: pytorch transforms for transforms and tensor conversion
-        
-        self.data = pd.read_csv(csv_path)
-        self.labels = np.asarray(self.data.iloc[:, 0])
-        self.height = height
-        self.width = width
-        self.transforms = transform
-
-    def __getitem__(self, index):
-        single_image_label = self.labels[index]
-        # Read each 784 pixels and reshape the 1D array ([784]) to 2D array ([28,28]) 
-        img_as_np = np.asarray(self.data.iloc[index][1:]).reshape(28,28).astype('uint8')
-  # Convert image from numpy array to PIL image, mode 'L' is for grayscale
-        img_as_img = Image.fromarray(img_as_np)
-        img_as_img = img_as_img.convert('L')
-        # Transform image to tensor
-        if self.transforms is not None:
-            img_as_tensor = self.transforms(img_as_img)
-        # Return image and the label
-        return (img_as_tensor, single_image_label)
-
-    def __len__(self):
-        return len(self.data.index)
-        
-
-if __name__ == "__main__":
-    transformations = transforms.Compose([transforms.ToTensor()])
-    custom_mnist_from_csv = \
-        CustomDatasetFromCSV('../data/mnist_in_csv.csv', 28, 28, transformations)
-        
-"""
-
-
-
-
-
-def download_data(data_pars):
+                         
+def download_dtopbox(data_pars):
   """
 
    dataset/
@@ -377,3 +327,79 @@ def get_dataset(data_pars) :
      ### Get from external tool
 
 
+
+    
+"""
+
+Dataset from pytorch Vision
+https://pytorch.org/docs/master/torchvision/datasets.html#fashion-mnist
+
+
+
+Dataset from Torch Text
+https://pytorch.org/text/datasets.html
+
+
+
+All dataset
+https://en.wikipedia.org/wiki/List_of_datasets_for_machine-learning_research
+
+
+
+
+Time series
+https://gluon-ts.mxnet.io/api/gluonts/gluonts.dataset.repository.datasets.html
+
+
+https://github.com/zalandoresearch/fashion-mnist
+
+
+
+
+
+####LudWig
+
+https://blog.dominodatalab.com/a-practitioners-guide-to-deep-learning-with-ludwig/
+
+
+
+
+
+
+class CustomDatasetFromCSV(Dataset):
+    def __init__(self, csv_path, height, width, transforms=None):
+        
+        Args:
+            csv_path (string): path to csv file
+            height (int): image height
+            width (int): image width
+            transform: pytorch transforms for transforms and tensor conversion
+        
+        self.data = pd.read_csv(csv_path)
+        self.labels = np.asarray(self.data.iloc[:, 0])
+        self.height = height
+        self.width = width
+        self.transforms = transform
+
+    def __getitem__(self, index):
+        single_image_label = self.labels[index]
+        # Read each 784 pixels and reshape the 1D array ([784]) to 2D array ([28,28]) 
+        img_as_np = np.asarray(self.data.iloc[index][1:]).reshape(28,28).astype('uint8')
+  # Convert image from numpy array to PIL image, mode 'L' is for grayscale
+        img_as_img = Image.fromarray(img_as_np)
+        img_as_img = img_as_img.convert('L')
+        # Transform image to tensor
+        if self.transforms is not None:
+            img_as_tensor = self.transforms(img_as_img)
+        # Return image and the label
+        return (img_as_tensor, single_image_label)
+
+    def __len__(self):
+        return len(self.data.index)
+        
+
+if __name__ == "__main__":
+    transformations = transforms.Compose([transforms.ToTensor()])
+    custom_mnist_from_csv = \
+        CustomDatasetFromCSV('../data/mnist_in_csv.csv', 28, 28, transformations)        
+"""

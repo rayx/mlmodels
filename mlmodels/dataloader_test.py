@@ -1,5 +1,5 @@
 import os
-import json
+from jsoncomment import JsonComment ; json = JsonComment()
 import pandas as pd
 import numpy as np
 import math
@@ -111,8 +111,8 @@ def main():
             path_norm('dataset/json/refactor/torchhub_cnn_dataloader.json' ),
             path_norm('dataset/json/refactor/model_list_CIFAR.json' ),
             path_norm('dataset/json/refactor/resnet34_benchmark_mnist.json' ),
-            path_norm('dataset/json/refactor/keras_textcnn.json'),
-            path_norm('dataset/json/refactor/namentity_crm_bilstm_new.json' )
+            path_norm('model_keras/textcnn.json'),
+            path_norm('model_keras/namentity_crm_bilstm.json')
 
     ]
 
