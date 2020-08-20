@@ -5,11 +5,11 @@ Resources to find information
 
 README
 
-https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
 
-https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
 
-https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
+
+
+
 
 
 ISSUES
@@ -149,6 +149,7 @@ https://github.com/arita37/mlmodels/issues/262
 <br/>
 </details>
 
+
 ## How to develop using Gitpod ?
 <details>
 https://github.com/arita37/mlmodels/issues/101
@@ -160,7 +161,6 @@ https://github.com/arita37/mlmodels/issues/101
 <details>
 https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
-<details>
 To add new model fork the repo. Inside the mlmodels directory we have multiple
 subdirectories named like model_keras, model_sklearn and so on the idea is to use
 **model_** before the type of framework you want to use. Now once you have decided the 
@@ -169,6 +169,42 @@ doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model st
 and config allows us to do the testing of all the models easily.
 </details>
 <br/>
+
+
+## How to use Command Line CLI ?
+<details>
+
+https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
+
+
+</details>
+<br/>
+
+## How the model configuration JSON works ?
+<details>
+
+
+</details>
+<br/>
+
+## How dataloader works ?
+<details>
+[dataloader.md](dataloader.md)
+</details>
+<br/>
+
+
+
+## How to improve the test process ?
+<details>
+  
+Automatic testing is enabled and results are described here :
+https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
+
+</details>
+<br/>
+
+
 
 
 ## How to check test log after commit ?
@@ -213,32 +249,6 @@ So we fix the erorr by launch the git pod and test the test case again and see i
 ## How to find information ?
 <details>
 
-
-</details>
-<br/>
-
-## How dataloader works ?
-<details>
-[dataloader.md](dataloader.md)
-</details>
-<br/>
-
-## How the model configuration JSON works ?
-<details>
-
-
-</details>
-<br/>
-
-## How to improve the test process ?
-<details>
-
-</details>
-<br/>
-
-
-## How to debug the repo ?
-<details>
 
 </details>
 <br/>
