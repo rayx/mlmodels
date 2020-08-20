@@ -1,23 +1,15 @@
 
-```bash
-Resources to find information
+## How to find information ?
+<details>
 
+Github Issues :
+   https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
 
-README
+This Howto.md file.
 
-
-
-
-
-
-
-
-ISSUES
-
-https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
-```
-
+</details>
 <br/>
+
 
 ## How to install mlmodels ?
 <details>
@@ -246,12 +238,7 @@ So we fix the erorr by launch the git pod and test the test case again and see i
 
 <br/>
 
-## How to find information ?
-<details>
 
-
-</details>
-<br/>
 
 
 
