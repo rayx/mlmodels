@@ -55,9 +55,9 @@ pip install   -r requirements_fake.txt
 ### Automatic installation
 One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
 for an automatic installation.
-
-<br/>
 </details>
+<br/>
+
 
 
 ## How to check if mlmodels works ?
@@ -116,9 +116,9 @@ python optim.py
 python model_tch/textcnn.py
 python model_keras/textcnn.py
 ```
-
-<br/>
 </details>
+<br/>
+
 
 
 ## How to check if one model works ?
