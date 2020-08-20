@@ -61,9 +61,8 @@ for an automatic installation.
 
 
 ## How to check if mlmodels works ?
-Basic testing can be done with command line tool ```ml_test```.
-
 <details>
+Basic testing can be done with command line tool ```ml_test```.
 
 ### test_fast_linux : Basic Import check
 ```ml_test --do test_fast_linux```
@@ -135,28 +134,30 @@ source activate py36
 cd mlmodels
 python model_XXXX/yyyy.py  
 ```
-</details>
 
 
 
 ### Check Your Test Runs
 https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
-
+</details>
 <br/>
+
 
 ## How to develop using Colab ?
-
+<details>
 https://github.com/arita37/mlmodels/issues/262
-
 <br/>
+</details>
 
 ## How to develop using Gitpod ?
-
+<details>
 https://github.com/arita37/mlmodels/issues/101
-
+</details>
 <br/>
 
+
 ## How to add  a model ?
+<details>
 https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
 <details>
@@ -167,8 +168,8 @@ frame work create appripriately named model file and config file as described in
 doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure 
 and config allows us to do the testing of all the models easily.
 </details>
-
 <br/>
+
 
 ## How to check test log after commit ?
 <details>
@@ -199,35 +200,49 @@ ml_models --do fit  --config_file dataset/json/benchmark_timeseries/gluonts_m4.j
 ```
 So we fix the erorr by launch the git pod and test the test case again and see it works correctly after that we can commit teh changes and submit the pull request.
 </details>
-
 <br/>
 
 ## How to debug the repo ?
+<details>
+  
+  
+</details>
 
 <br/>
 
 ## How to find information ?
+<details>
 
+
+</details>
 <br/>
 
 ## How dataloader works ?
+<details>
 [dataloader.md](dataloader.md)
-
+</details>
 <br/>
 
-## How configuation JSON works ?
+## How the model configuration JSON works ?
+<details>
 
+
+</details>
 <br/>
 
 ## How to improve the test process ?
+<details>
 
+</details>
 <br/>
+
 
 ## How to debug the repo ?
+<details>
 
+</details>
 <br/>
 
-## How to find information ?
 
 
 
