@@ -1,70 +1,168 @@
 
 ```bash
+Resources to find information
 
-Ressources to find information
 
-
+README
 
 https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
 
 https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
 
-
 https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
 
+ISSUES
+
 https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
-
-
-https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
-
-
-
-
-
-
 ```
 
-
-
+<br/>
 
 ## How to install mlmodels ?
+There are two types of installations for ```mlmodels```.
+The first is a manual controlled installation, the second is an automatic shell installation.
+
+### Manual installation
+The manual installation is dependant on [requirements.txt](https://github.com/arita37/mlmodels/blob/dev/requirements.txt)
+and other similar text files.
+
+Preview:
+```
+pandas<1.0
+scipy>=1.3.0
+scikit-learn==0.21.2
+numexpr>=2.6.8
+```
+
 <details>
 
+```bash
+Linux/MacOS
+pip install numpy<=1.17.0
+pip install -e .  -r requirements.txt
+pip install   -r requirements_fake.txt
+
+Windows (use WSL + Linux)
+pip install numpy<=1.17.0
+pip install torch==1..1 -f https://download.pytorch.org/whl/torch_stable.html
+pip install -e .  -r requirements_wi.txt
+pip install   -r requirements_fake.txt
+```
 
 </details>
 
+### Automatic installation
+One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
+for an automatic installation.
+
+<br/>
 
 ## How to check if mlmodels works ?
+Basic testing can be done with command line tool ```ml_test```.
+
+<details>
+
+### test_fast_linux : Basic Import check
+```ml_test --do test_fast_linux```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_fast_linux.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_import)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/) 
+
+### test_cli : Command Line Testing
+```ml_test --do test_cli```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_cli.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_test_cli)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
+
+### test_dataloader : Test if dataloader works
+```ml_test --do test_dataloader```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_dataloader.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_dataloader)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
+
+### test_jupyter : Test if jupyter notebooks works
+```ml_test --do test_jupyter```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_jupyter.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_jupyter)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
+
+### test_benchmark : benchmark
+```ml_test --do test_benchmark```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_benchmark.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_benchmark)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
+
+### test_pull_request : PR 
+```ml_test --do test_jupyter```
+
+1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_pull_request.yml)
+2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_pullrequest)
+3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
+
+</details>
+
+You can then run basic codes and models to verify correct installation and
+work environment.
+
+```
+cd mlmodels
+python optim.py
+python model_tch/textcnn.py
+python model_keras/textcnn.py
+```
+
+<br/>
+
+## How to check if one model works ?
+
+### Run Model
+Run/Test newly added model on your local machine or on 
+[Gitpod](https://gitpod.io/) or [Colab](https://colab.research.google.com/).
 
 
+Example of Gitpod use:
+```
+source activate py36
+cd mlmodels
+python model_XXXX/yyyy.py  
+```
 
+### Check Your Test Runs
+https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
 
-## How to check if  one model works ?
-
-
-
-
+<br/>
 
 ## How to develop using Colab ?
 
+https://github.com/arita37/mlmodels/issues/262
+
+<br/>
 
 ## How to develop using Gitpod ?
 
+https://github.com/arita37/mlmodels/issues/101
 
-
-
-
-
-
-
+<br/>
 
 ## How to add  a model ?
+https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
+
 <details>
-To add new model fork the repo. Inside the mlmodels directory we have multiple subdirectories named like model_keras, model_sklearn and so on the idea is to use **model_** before the type of framework you want to use. Now once you have decided the frame work create appripriately named model file and config file as described in the read me doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure and config allows us to do the testing of all the models easily.
+To add new model fork the repo. Inside the mlmodels directory we have multiple
+subdirectories named like model_keras, model_sklearn and so on the idea is to use
+**model_** before the type of framework you want to use. Now once you have decided the 
+frame work create appripriately named model file and config file as described in the read me 
+doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure 
+and config allows us to do the testing of all the models easily.
 </details>
 
-
+<br/>
 
 ## How to check test log after commit ?
 <details>
@@ -96,44 +194,32 @@ ml_models --do fit  --config_file dataset/json/benchmark_timeseries/gluonts_m4.j
 So we fix the erorr by launch the git pod and test the test case again and see it works correctly after that we can commit teh changes and submit the pull request.
 </details>
 
+<br/>
 
-## How to debug the repo >
+## How to debug the repo ?
 
+<br/>
 
 ## How to find information ?
 
-
-
-
-
-
-
-
-
-
-
-
+<br/>
 
 ## How dataloader works ?
-[Please refer to here](dataloader.md)
+[dataloader.md](dataloader.md)
+
+<br/>
 
 ## How configuation JSON works ?
 
+<br/>
 
+## How to improve the test process ?
 
+<br/>
 
+## How to debug the repo ?
 
-## How to improve the test process >
-
-
-
-
-
-## How to debug the repo >
-
-
-
-
+<br/>
 
 ## How to find information ?
 
