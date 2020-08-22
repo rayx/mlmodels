@@ -1,25 +1,18 @@
 
-```bash
-Resources to find information
+## How to find information ?
+<details>
 
+Github Issues :
+   https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
 
-README
+This Howto.md file.
 
-https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
-
-https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
-
-https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
-
-
-ISSUES
-
-https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
-```
-
+</details>
 <br/>
 
+
 ## How to install mlmodels ?
+<details>
 There are two types of installations for ```mlmodels```.
 The first is a manual controlled installation, the second is an automatic shell installation.
 
@@ -35,7 +28,6 @@ scikit-learn==0.21.2
 numexpr>=2.6.8
 ```
 
-<details>
 
 ```bash
 Linux/MacOS
@@ -50,18 +42,19 @@ pip install -e .  -r requirements_wi.txt
 pip install   -r requirements_fake.txt
 ```
 
-</details>
+
 
 ### Automatic installation
 One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
 for an automatic installation.
-
+</details>
 <br/>
 
-## How to check if mlmodels works ?
-Basic testing can be done with command line tool ```ml_test```.
 
+
+## How to check if mlmodels works ?
 <details>
+Basic testing can be done with command line tool ```ml_test```.
 
 ### test_fast_linux : Basic Import check
 ```ml_test --do test_fast_linux```
@@ -105,7 +98,6 @@ Basic testing can be done with command line tool ```ml_test```.
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_pullrequest)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
-</details>
 
 You can then run basic codes and models to verify correct installation and
 work environment.
@@ -116,11 +108,13 @@ python optim.py
 python model_tch/textcnn.py
 python model_keras/textcnn.py
 ```
-
+</details>
 <br/>
 
-## How to check if one model works ?
 
+
+## How to check if one model works ?
+<details>
 ### Run Model
 Run/Test newly added model on your local machine or on 
 [Gitpod](https://gitpod.io/) or [Colab](https://colab.research.google.com/).
@@ -133,27 +127,32 @@ cd mlmodels
 python model_XXXX/yyyy.py  
 ```
 
+
+
 ### Check Your Test Runs
 https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
-
+</details>
 <br/>
+
 
 ## How to develop using Colab ?
-
+<details>
 https://github.com/arita37/mlmodels/issues/262
-
 <br/>
+</details>
+
 
 ## How to develop using Gitpod ?
-
+<details>
 https://github.com/arita37/mlmodels/issues/101
-
+</details>
 <br/>
 
+
 ## How to add  a model ?
+<details>
 https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
-<details>
 To add new model fork the repo. Inside the mlmodels directory we have multiple
 subdirectories named like model_keras, model_sklearn and so on the idea is to use
 **model_** before the type of framework you want to use. Now once you have decided the 
@@ -161,8 +160,65 @@ frame work create appripriately named model file and config file as described in
 doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure 
 and config allows us to do the testing of all the models easily.
 </details>
-
 <br/>
+
+
+## How to use Command Line CLI ?
+<details>
+
+https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
+
+
+</details>
+<br/>
+
+## How the model configuration JSON works ?
+<details>
+Sample of model written in JSON is located here :
+     https://github.com/arita37/mlmodels/tree/dev/mlmodels/dataset/json
+   
+    https://github.com/arita37/mlmodels/blob/dev/mlmodels/example/README_usage.md
+
+A model computation is describred in 4 parts:
+
+```
+myjson.json
+{
+model_pars
+compute_pars
+data_pars
+out_pars
+}
+```
+
+
+</details>
+<br/>
+
+## How dataloader works ?
+<details>
+https://github.com/arita37/mlmodels/blob/dev/docs/DEV_docs/dataloader.md
+</details>
+<br/>
+
+
+
+## How to improve the test process ?
+<details>
+  
+Automatic testing is enabled and results are described here :
+    https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
+
+Code for testing all the repo is located here:
+
+   https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py
+
+
+</details>
+<br/>
+
+
+
 
 ## How to check test log after commit ?
 <details>
@@ -193,35 +249,18 @@ ml_models --do fit  --config_file dataset/json/benchmark_timeseries/gluonts_m4.j
 ```
 So we fix the erorr by launch the git pod and test the test case again and see it works correctly after that we can commit teh changes and submit the pull request.
 </details>
-
 <br/>
 
 ## How to debug the repo ?
+<details>
+  
+  
+</details>
 
 <br/>
 
-## How to find information ?
 
-<br/>
 
-## How dataloader works ?
-[dataloader.md](dataloader.md)
-
-<br/>
-
-## How configuation JSON works ?
-
-<br/>
-
-## How to improve the test process ?
-
-<br/>
-
-## How to debug the repo ?
-
-<br/>
-
-## How to find information ?
 
 
 
