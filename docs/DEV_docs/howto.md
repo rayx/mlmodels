@@ -5,14 +5,16 @@
 Github Issues :
    https://github.com/arita37/mlmodels/issues?q=is%3Aopen+is%3Aissue+label%3Adev-documentation
 
-This Howto.md file.
+This howto.md file.
 
 </details>
 <br/>
 
 
+
 ## How to install mlmodels ?
 <details>
+
 There are two types of installations for ```mlmodels```.
 The first is a manual controlled installation, the second is an automatic shell installation.
 
@@ -29,7 +31,7 @@ numexpr>=2.6.8
 ```
 
 
-```bash
+```
 Linux/MacOS
 pip install numpy<=1.17.0
 pip install -e .  -r requirements.txt
@@ -42,11 +44,10 @@ pip install -e .  -r requirements_wi.txt
 pip install   -r requirements_fake.txt
 ```
 
-
-
 ### Automatic installation
 One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
 for an automatic installation.
+
 </details>
 <br/>
 
@@ -54,6 +55,7 @@ for an automatic installation.
 
 ## How to check if mlmodels works ?
 <details>
+
 Basic testing can be done with command line tool ```ml_test```.
 
 ### test_fast_linux : Basic Import check
@@ -108,6 +110,7 @@ python optim.py
 python model_tch/textcnn.py
 python model_keras/textcnn.py
 ```
+
 </details>
 <br/>
 
@@ -115,6 +118,7 @@ python model_keras/textcnn.py
 
 ## How to check if one model works ?
 <details>
+
 ### Run Model
 Run/Test newly added model on your local machine or on 
 [Gitpod](https://gitpod.io/) or [Colab](https://colab.research.google.com/).
@@ -127,30 +131,37 @@ cd mlmodels
 python model_XXXX/yyyy.py  
 ```
 
-
-
 ### Check Your Test Runs
 https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
+
 </details>
 <br/>
+
 
 
 ## How to develop using Colab ?
 <details>
+
 https://github.com/arita37/mlmodels/issues/262
-<br/>
+
 </details>
+<br/>
+
 
 
 ## How to develop using Gitpod ?
 <details>
+
 https://github.com/arita37/mlmodels/issues/101
+
 </details>
 <br/>
 
 
+
 ## How to add  a model ?
 <details>
+
 https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
 To add new model fork the repo. Inside the mlmodels directory we have multiple
@@ -159,8 +170,10 @@ subdirectories named like model_keras, model_sklearn and so on the idea is to us
 frame work create appripriately named model file and config file as described in the read me 
 doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure 
 and config allows us to do the testing of all the models easily.
+
 </details>
 <br/>
+
 
 
 ## How to use Command Line CLI ?
@@ -168,16 +181,16 @@ and config allows us to do the testing of all the models easily.
 
 https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
 
-
 </details>
 <br/>
 
+
+
 ## How the model configuration JSON works ?
 <details>
-Sample of model written in JSON is located here :
-     https://github.com/arita37/mlmodels/tree/dev/mlmodels/dataset/json
-   
-    https://github.com/arita37/mlmodels/blob/dev/mlmodels/example/README_usage.md
+
+Sample of model written in JSON is located here : https://github.com/arita37/mlmodels/tree/dev/mlmodels/dataset/json
+
 
 A model computation is describred in 4 parts:
 
@@ -191,13 +204,72 @@ out_pars
 }
 ```
 
+**Examples**
+```json
+    {
+        "test": {
+
+              "hypermodel_pars":   {
+             "learning_rate": {"type": "log_uniform", "init": 0.01,  "range" : [0.001, 0.1] },
+             "num_layers":    {"type": "int", "init": 2,  "range" :[2, 4] },
+             "size":    {"type": "int", "init": 6,  "range" :[6, 6] },
+             "output_size":    {"type": "int", "init": 6,  "range" : [6, 6] },
+
+             "size_layer":    {"type" : "categorical", "value": [128, 256 ] },
+             "timestep":      {"type" : "categorical", "value": [5] },
+             "epoch":         {"type" : "categorical", "value": [2] }
+           },
+
+            "model_pars": {
+                "learning_rate": 0.001,     
+                "num_layers": 1,
+                "size": 6,
+                "size_layer": 128,
+                "output_size": 6,
+                "timestep": 4,
+                "epoch": 2
+            },
+
+            "data_pars" :{
+              "path"            : 
+              "location_type"   :  "local/absolute/web",
+              "data_type"   :   "text" / "recommender"  / "timeseries" /"image",
+              "data_loader" :  "pandas",
+              "data_preprocessor" : "mlmodels.model_keras.prepocess:process",
+              "size" : [0,1,2],
+              "output_size": [0, 6]              
+            },
+
+
+            "compute_pars": {
+                "distributed": "mpi",
+                "epoch": 10
+            },
+            "out_pars": {
+                "out_path": "dataset/",
+                "data_type": "pandas",
+                "size": [0, 0, 6],
+                "output_size": [0, 6]
+            }
+        },
+    
+        "prod": {
+            "model_pars": {},
+            "data_pars": {}
+        }
+    }
+```
 
 </details>
 <br/>
 
+
+
 ## How dataloader works ?
 <details>
-https://github.com/arita37/mlmodels/blob/dev/docs/DEV_docs/dataloader.md
+
+[dataloader.md](https://github.com/arita37/mlmodels/blob/dev/docs/DEV_docs/dataloader.md)
+
 </details>
 <br/>
 
@@ -207,12 +279,12 @@ https://github.com/arita37/mlmodels/blob/dev/docs/DEV_docs/dataloader.md
 <details>
   
 Automatic testing is enabled and results are described here :
+
     https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
 
 Code for testing all the repo is located here:
 
    https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py
-
 
 </details>
 <br/>
@@ -222,6 +294,7 @@ Code for testing all the repo is located here:
 
 ## How to check test log after commit ?
 <details>
+
 Once the model is added we can do testing on it with commands like this, where model_framework is a placeholder for your selected framework and model_file.json is the config file for your model.
 
 ```
@@ -248,6 +321,7 @@ We can see that while running the test case at line 418 caused the error, and we
 ml_models --do fit  --config_file dataset/json/benchmark_timeseries/gluonts_m4.json --config_mode "deepar" 
 ```
 So we fix the erorr by launch the git pod and test the test case again and see it works correctly after that we can commit teh changes and submit the pull request.
+
 </details>
 <br/>
 
@@ -256,7 +330,6 @@ So we fix the erorr by launch the git pod and test the test case again and see i
   
   
 </details>
-
 <br/>
 
 
