@@ -31,10 +31,16 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'  # **** change the warning level ****
 
 
 ####################################################################################################
-
+global model, session
 
 
 ####################################################################################################
+def init(**kw,  **kwargs):
+    global model, session
+    model = Model(**kwargs)
+    session = None
+    
+
 class Model:
     def __init__(self, model_pars=None, data_pars=None, compute_pars=None, **kwargs):
         reset_model()
@@ -87,16 +93,17 @@ class Model:
         self.optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate).minimize(self.cost)
 
 
-def fit(model, data_pars=None, compute_pars=None,  out_pars=None, **kwarg):
+def fit(data_pars=None, compute_pars=None,  out_pars=None, **kwarg):
+    global model, session
     df = get_dataset(data_pars)
     print(df.head(5))
     msample = df.shape[0]
     nlog_freq = compute_pars.get("nlog_freq", 100)
 
     ######################################################################
-    # sess = tf.compat.v1.compat.v1.InteractiveSession()
-    sess = tf.compat.v1.Session()
-    sess.run(tf.compat.v1.global_variables_initializer())
+    # session = tf.compat.v1.compat.v1.InteractiveSession()
+    session = tf.compat.v1.Session()
+    session.run(tf.compat.v1.global_variables_initializer())
     for i in range(model.epoch):
         total_loss = 0.0
 
@@ -106,7 +113,7 @@ def fit(model, data_pars=None, compute_pars=None,  out_pars=None, **kwarg):
             index   = min(k + model.timestep, df.shape[0] - 1)
             batch_x = np.expand_dims(df.iloc[k:index, :].values, axis=0)
             batch_y = df.iloc[k + 1: index + 1, :].values
-            last_state, _, loss = sess.run(
+            last_state, _, loss = session.run(
                 [model.last_state, model.optimizer, model.cost],
                 feed_dict={model.X: batch_x, model.Y: batch_y, model.hidden_layer: init_value},
             )
@@ -119,10 +126,10 @@ def fit(model, data_pars=None, compute_pars=None,  out_pars=None, **kwarg):
 
         if (i + 1) % nlog_freq == 0:
             print("epoch:", i + 1, "avg loss:", total_loss)
-    return model,sess
 
 
-def fit_metrics(model, sess=None, data_pars=None, compute_pars=None, out_pars=None):
+
+def fit_metrics(data_pars=None, compute_pars=None, out_pars=None):
     """
        Return metrics of the model stored
     """
@@ -131,25 +138,25 @@ def fit_metrics(model, sess=None, data_pars=None, compute_pars=None, out_pars=No
 
 
 
-def metrics(model, sess=None, data_pars=None, compute_pars=None, out_pars=None):
+def metrics(data_pars=None, compute_pars=None, out_pars=None):
     """
        Return metrics of the model stored
     #### SK-Learn metrics
     # Compute stats on training
     #df = get_dataset(data_pars)
-    #arr_out = predict(model, sess, df, get_hidden_state=False, init_value=None)
+    #arr_out = predict(model, session, df, get_hidden_state=False, init_value=None)
     :param model:
-    :param sess:
+    :param session:
     :param data_pars:
     :param out_pars:
     :return:
     """
-
     return model.stats
 
 
-def predict(model, sess=None, data_pars=None,  compute_pars=None, out_pars=None,
+def predict(data_pars=None,  compute_pars=None, out_pars=None,
             get_hidden_state=False, init_value=None):
+    global model, session
     df = get_dataset(data_pars)
     print(df, flush=True)
 
@@ -160,7 +167,7 @@ def predict(model, sess=None, data_pars=None,  compute_pars=None, out_pars=None,
     upper_b = (df.shape[0] // model.timestep) * model.timestep
 
     if upper_b == model.timestep:
-        out_logits, init_value = sess.run(
+        out_logits, init_value = session.run(
             [model.logits, model.last_state],
             feed_dict={
                 model.X: np.expand_dims(df.values, axis=0),
@@ -171,7 +178,7 @@ def predict(model, sess=None, data_pars=None,  compute_pars=None, out_pars=None,
 
     else:
         for k in range(0, (df.shape[0] // model.timestep) * model.timestep, model.timestep):
-            out_logits, last_state = sess.run(
+            out_logits, last_state = session.run(
                 [model.logits, model.last_state],
                 feed_dict={model.X: np.expand_dims(df.iloc[k: k + model.timestep].values, axis=0),
                            model.hidden_layer: init_value,
@@ -187,15 +194,17 @@ def predict(model, sess=None, data_pars=None,  compute_pars=None, out_pars=None,
 
 
 
-
 def reset_model():
     tf.compat.v1.reset_default_graph()
+    global model, session
+    model, session = None, None
 
 
-def save(model, session=None, save_pars=None):
+def save(save_pars=None):
+    global model, session
     from mlmodels.util import save_tf
     print(save_pars)
-    save_tf(model, session, save_pars)
+    save_tf(model, sessionion, save_pars)
     d = {"model_pars"  :  model.model_pars, 
      "compute_pars":  model.compute_pars,
      "data_pars"   :  model.data_pars
@@ -207,6 +216,7 @@ def save(model, session=None, save_pars=None):
 
 
 def load(load_pars=None):
+    global model, session
     from mlmodels.util import load_tf
     print(load_pars)
     path = load_pars['path'] + "/model/model_pars.pkl"
@@ -221,17 +231,16 @@ def load(load_pars=None):
     
     full_name  = model_path + "/model.ckpt"
     # 
-    # saver.restore(sess,  full_name)
-    # sess = tf.compat.v1.Session()
+    # saver.restore(session,  full_name)
+    # session = tf.compat.v1.Session()
     # saver = tf.train.Saver()
     # saver = tf.train.import_meta_graph(model_path + '/model.ckpt.meta')
-    # saver.restore(sess,  full_name)
-    # saver.restore(sess, tf.train.latest_checkpoint(model_path+'/'))
+    # saver.restore(session,  full_name)
+    # saver.restore(session, tf.train.latest_checkpoint(model_path+'/'))
     
-    sess = load_tf(load_pars) 
+    session = load_tf(load_pars) 
     print(f"Loaded saved model from {model_path}")
-    
-    return model, sess
+
 
 
 
@@ -325,20 +334,20 @@ def test(data_path="dataset/", pars_choice="test01", config_mode="test"):
 
 
     log("#### Model init  #############################################")
-    session = None
-    model = Model(model_pars, data_pars, compute_pars)
+    sessionion = None
+    Model(model_pars, data_pars, compute_pars)
 
     log("#### Model fit   #############################################")
-    model, session = fit(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+    fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 
     log("#### Predict   #####################################################")
     data_pars["train"] = 0
-    ypred = predict(model, session, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+    ypred = predict(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, data_pars, compute_pars, out_pars)
+    metrics_val = fit_metrics(data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 
@@ -347,12 +356,12 @@ def test(data_path="dataset/", pars_choice="test01", config_mode="test"):
 
     log("#### Save   ########################################################")
     save_pars ={ 'path' : out_pars['path']  }
-    save(model, session, save_pars)
+    save(save_pars)
     
     
     log("#### Load   ########################################################")
     load_pars ={ 'path' : out_pars['path']  }
-    session = load(out_pars)
+    load(out_pars)
     #     ypred = predict(model2, data_pars, compute_pars, out_pars)
     #     metrics_val = metrics(model2, ypred, data_pars, compute_pars, out_pars)
     # print(model2)
