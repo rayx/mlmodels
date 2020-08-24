@@ -23,7 +23,7 @@ The manual installation is dependant on [requirements.txt](https://github.com/ar
 and other similar text files.
 
 Preview:
-```
+```bash
 pandas<1.0
 scipy>=1.3.0
 scikit-learn==0.21.2
@@ -31,7 +31,7 @@ numexpr>=2.6.8
 ```
 
 
-```
+```bash
 Linux/MacOS
 pip install numpy<=1.17.0
 pip install -e .  -r requirements.txt
@@ -125,7 +125,7 @@ Run/Test newly added model on your local machine or on
 
 
 Example of Gitpod use:
-```
+```bash
 source activate py36
 cd mlmodels
 python model_XXXX/yyyy.py  
