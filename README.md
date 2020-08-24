@@ -87,6 +87,8 @@ If you want to contribute,  [contribution guide](https://cutt.ly/Xylux3Q)
 9. DSSM:  Learning Deep Structured Semantic Models for Web Search using Clickthrough Data
 [[Link](https://dl.acm.org/doi/pdf/10.1145/2505515.2505665)]
 
+
+
 10. CDSSM:  Learning Semantic Representations Using Convolutional Neural Networks for Web Search
 [[Link](https://dl.acm.org/doi/pdf/10.1145/2567948.2577348)]
 
