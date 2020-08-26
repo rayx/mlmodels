@@ -32,14 +32,50 @@ Let's review the structure in more detail and give some templates.
 
 ## 2.1. Model parameters
 
+These will of course depend on the model your are using. The basics would be something like the following,
+containing basic info of the said model:
+
 ```json
 "model_pars": {
-            "model_uri"     : "",
-            "dim_channel"   : ,
-            "kernel_height" : [],
-            "dropout_rate"  : ,
-            "num_class"     : 
+            "model_uri": "model_tch.torchhub",
+            "repo_uri": "facebookresearch/pytorch_GAN_zoo:hub",
+            "model": "PGAN",
+            "model_name" : "celebAHQ-512",
         }
+```
+
+Depending on the data the model can take specific data related parameters:
+
+```json
+"model_pars" : {
+                "freq": "5min",
+                "prediction_length": 12,
+                "cardinality": [1],
+}
+```
+
+Let's give some examples of model specific structures/parameters:
+
+```json
+"model_pars": {
+            "num_classes": 1000,
+            "pretrained": 0,  "_comment": "0: False, 1: True",
+            "num_layers": 1,
+            "size": 6,
+            "size_layer": 128,
+            "output_size": 6,
+            "timestep": 4,
+            "epoch": 2
+        }
+```
+
+```json
+"model_pars" : {
+                "max_iter_jitter": 10,
+                "jitter_method":  "iter",
+                "sample_noise": true,
+                "num_parallel_samples":  100
+}
 ```
 
 
@@ -61,13 +97,29 @@ in machine learning can vary greatly. We thus explained it in more detail:
         },
 ```
 
+```json
+"compute_pars": {
+            "num_samples": 100,
+            "compute_pars" : {
+                "batch_size": 32, "clip_gradient": 100, "epochs": 1, "init": "xavier", 
+                "learning_rate": 1e-3, 
+                "learning_rate_decay_factor": 0.5, 
+                "hybridize": false,
+                "num_batches_per_epoch": 10,
+                "minimum_learning_rate": 5e-05, "patience": 10, "weight_decay": 1e-08
+            }
+        },
+```
+
+
 
 ## 2.4. Output parameters
 
 ```json
 "out_pars": {
             "path"          : "",
-            "checkpointdir" : ""
+            "checkpointdir" : "",
+            "plot_prob" : "",
         }
 ```
 
@@ -116,6 +168,72 @@ ypred         = module.predict(model, sess,  data_pars, compute_pars, out_pars) 
 
 ### 4. Other
 
+Instead of including only one model in a .json file, you can choose to create benchmark files 
+which contain multiple models. This allows for faster and more concentrated benchmarking 
+of many models and all the different types of parameters. The basic structure of such a file would be:
+
+```json
+{
+    "deepar": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },
+    
+    "deepfactor": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },   
+    
+    "wavenet": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },       
+
+    "transformer": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },       
+
+    "deepstate": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },
+    
+    "gp_forecaster": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+        },
+
+    "feedforward": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    },   
+
+     "seq2seq": {
+        "model_pars": {},
+        "data_pars": {}, 
+        "compute_pars": {},
+        "out_pars": {}
+    }
+}
+```
+
+This is thus just a list of individual model .json files. 
+
 You can also add variants to your model parameters through .json files. For example 
 we give here a benchmark file for evaluating model performances:
 
@@ -133,16 +251,16 @@ we give here a benchmark file for evaluating model performances:
 ```json
 "test": {
 
-              "hypermodel_pars":   {
-             "learning_rate": {"type": "log_uniform", "init": 0.01,  "range" : [0.001, 0.1] },
-             "num_layers":    {"type": "int", "init": 2,  "range" :[2, 4] },
-             "size":    {"type": "int", "init": 6,  "range" :[6, 6] },
-             "output_size":    {"type": "int", "init": 6,  "range" : [6, 6] },
+            "hypermodel_pars":   {
+                "learning_rate": {"type": "log_uniform", "init": 0.01,  "range" : [0.001, 0.1] },
+                "num_layers":    {"type": "int", "init": 2,  "range" :[2, 4] },
+                "size":    {"type": "int", "init": 6,  "range" :[6, 6] },
+                "output_size":    {"type": "int", "init": 6,  "range" : [6, 6] },
 
-             "size_layer":    {"type" : "categorical", "value": [128, 256 ] },
-             "timestep":      {"type" : "categorical", "value": [5] },
-             "epoch":         {"type" : "categorical", "value": [2] }
-           },
+                "size_layer":    {"type" : "categorical", "value": [128, 256 ] },
+                "timestep":      {"type" : "categorical", "value": [5] },
+                "epoch":         {"type" : "categorical", "value": [2] }
+            },
 
             "model_pars": {
                 "learning_rate": 0.001,     
@@ -221,9 +339,6 @@ we give here a benchmark file for evaluating model performances:
             "dataset_classes_key":"y",            
 
             "transform_uri" : "mlmodels.preprocess.image:torch_transform_generic"
-
-
-
 
 
         },
