@@ -189,7 +189,12 @@ https://github.com/arita37/mlmodels/blob/adata2/README_usage_CLI.md
 ## How the model configuration JSON works ?
 <details>
 
-Sample of model written in JSON is located here : https://github.com/arita37/mlmodels/tree/dev/mlmodels/dataset/json
+Detailed description of the JSON format is described here :
+https://github.com/arita37/mlmodels/blob/dev/docs/DEV_docs/json.md
+
+
+Sample of model written in JSON is located here : 
+https://github.com/arita37/mlmodels/tree/dev/mlmodels/dataset/json
 
 
 A model computation is describred in 4 parts:
@@ -197,10 +202,14 @@ A model computation is describred in 4 parts:
 ```
 myjson.json
 {
+
 model_pars
 compute_pars
 data_pars
 out_pars
+
+#### Optional
+hypermodel_pars
 }
 ```
 
