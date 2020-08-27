@@ -41,8 +41,34 @@ containing basic info of the said model:
             "repo_uri": "facebookresearch/pytorch_GAN_zoo:hub",
             "model": "PGAN",
             "model_name" : "celebAHQ-512",
+            "model_pars" : {   ## params specific to the model class PGAN
+                 "input_class' :  { "uri:  "myfile.py:myclass",
+                                    "args" :[ "ok", "ok2"     ],
+                                    "kwargs" : {"lrate" : 0.5, 
+                                  }  
+             }
+            
+            
         }
 ```
+
+2 types of input data :
+   static : str,int, list, dict of static
+   
+   dynamic :  a python object is instanced during the parsing.
+   dynamic part is specified by this json snippet :
+   ```json
+                    "input_class' :  { "uri:  "myfile.py:myclass",
+                                    "args" :[ "ok", "ok2"     ],
+                                    "kwargs" : {"lrate" : 0.5, 
+                                  }  
+    ```
+
+   Example of dynamic object creation by json :
+   
+   https://github.com/arita37/mlmodels/blob/dev/mlmodels/model_gluon/gluonts_deepar.json#L10
+
+
 
 Depending on the data the model can take specific data related parameters:
 
@@ -100,7 +126,7 @@ in machine learning can vary greatly. We thus explained it in more detail:
 ```json
 "compute_pars": {
             "num_samples": 100,
-            "compute_pars" : {
+            "compute_pars" : {   #### Params specific the implemented class
                 "batch_size": 32, "clip_gradient": 100, "epochs": 1, "init": "xavier", 
                 "learning_rate": 1e-3, 
                 "learning_rate_decay_factor": 0.5, 
