@@ -148,7 +148,7 @@ it does you can then automise the process.
 # import library
 import mlmodels
 model_uri    = "model_tf.1_lstm.py"
-model_pars   =  {  "num_layers": 1, "size": ncol_input, "size_layer": 128, "output_size": ncol_output, "timestep": 4,}
+model_pars   =  { "model_uri" :model_uri,  "num_layers": 1, "size": ncol_input, "size_layer": 128, "output_size": ncol_output, "timestep": 4,}
 data_pars    =  {"data_path": "/folder/myfile.csv"  , "data_type": "pandas" }
 compute_pars =  { "learning_rate": 0.001, }
 out_pars     =  { "path": "ztest_1lstm/", "model_path" : "ztest_1lstm/model/"}
@@ -158,12 +158,12 @@ load_pars = { "path" : "ztest_1lstm/model/" }
 #### Load Parameters and Train
 from mlmodels.models import module_load
 module        =  module_load( model_uri= model_uri )                           # Load file definition
-model         =  module.Model(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars)      
-model, sess   =  module.fit(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars)
+module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 #### Inference
-metrics_val   =  module.fit_metrics( model, sess, data_pars, compute_pars, out_pars) # get stats
-ypred         = module.predict(model, sess,  data_pars, compute_pars, out_pars)     # predict pipeline
+metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars) # get stats
+ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict pipeline
 ```
 
 ### 4. Other
