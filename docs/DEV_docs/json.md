@@ -54,18 +54,17 @@ containing basic info of the said model:
 
 2 types of input data :
    static : str,int, list, dict of static
-   
    dynamic :  a python object is instanced during the parsing.
    dynamic part is specified by this json snippet :
-   ```json
+   
+```json
                     "input_class' :  { "uri:  "myfile.py:myclass",
                                     "args" :[ "ok", "ok2"     ],
                                     "kwargs" : {"lrate" : 0.5, 
                                   }  
-    ```
+ ```
 
    Example of dynamic object creation by json :
-   
    https://github.com/arita37/mlmodels/blob/dev/mlmodels/model_gluon/gluonts_deepar.json#L10
 
 
