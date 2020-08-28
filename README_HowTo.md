@@ -102,14 +102,8 @@ Basic testing can be done with command line tool ```ml_test```.
 
 
 You can then run basic codes and models to verify correct installation and
-work environment.
+work environment. See debugging part.
 
-```
-cd mlmodels
-python optim.py
-python model_tch/textcnn.py
-python model_keras/textcnn.py
-```
 
 </details>
 <br/>
@@ -337,7 +331,49 @@ So we fix the erorr by launch the git pod and test the test case again and see i
 ## How to debug the repo ?
 <details>
   
-  
+To debug the repo, you should first verify correct installation with the following basic commands:
+
+```bash
+cd mlmodels
+python optim.py
+python model_tch/textcnn.py
+python model_keras/textcnn.py
+```
+
+Another helpful thing to do would be to [search](https://github.com/search?q=pretrained+repo%3Aarita37%2Fmlmodels+path%3A%2Fmlmodels%2F+filename%3Amlmodels+filename%3Autil+filename%3Abenchmark+filename%3Aoptim+language%3APython+language%3APython&type=Code&ref=advsearch&l=Python&l=Python) the repo for relevant debugging information.
+
+Make sure your interface is complete:
+
+models.py 
+```
+   module_load(model_uri)
+   model_create(module)
+   fit(model, module, session, data_pars, out_pars   )
+   metrics(model, module, session, data_pars, out_pars)
+   predict(model, module, session, data_pars, out_pars)
+   save(model, path)
+   load(model)
+```
+
+optim.py
+```
+   optim(modelname="model_tf.1_lstm.py",  model_pars= {}, data_pars = {}, compute_pars={"method": "normal/prune"}
+       , save_folder="/mymodel/", log_folder="", ntrials=2) 
+
+   optim_optuna(modelname="model_tf.1_lstm.py", model_pars= {}, data_pars = {}, compute_pars={"method" : "normal/prune"},
+                save_folder="/mymodel/", log_folder="", ntrials=2) 
+```
+
+Associated json files must be perfectly made for your specific model. Check that all parameters
+are present.
+
+
+If nothing works then make sure you have followed all the right steps from this HowTo markdown file.
+Particularly, don't forget to create your test json file. If the issue persists then submit an issue, 
+all developpers are very active a,d will get back to you quickly.
+
+
+
 </details>
 <br/>
 
