@@ -118,6 +118,34 @@ https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
 
 
 
+## How the testing works ?
+<details>
+  
+  Github Actions --> Triggers some test runs in mlmodels/ztest.py 
+   --> Trigger some CLI or code using mlmodels 
+  --> Test logs is submitted to [mlmodels_store repo](https://github.com/arita37/mlmodels_store/blob/master/log_import/log_import.py)--> Logs are visible for manual check.
+  
+  
+  
+Automatic testing is enabled and results are described here :
+
+    https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
+
+
+Code for testing all the repo is located here:
+   https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py
+
+
+Github actions to run automatic test 
+
+
+
+</details>
+<br/>
+
+
+
+
 ## How to develop using Colab ?
 <details>
 
@@ -262,20 +290,6 @@ hypermodel_pars
 <br/>
 
 
-
-## How to improve the test process ?
-<details>
-  
-Automatic testing is enabled and results are described here :
-
-    https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
-
-Code for testing all the repo is located here:
-
-   https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py
-
-</details>
-<br/>
 
 
 
