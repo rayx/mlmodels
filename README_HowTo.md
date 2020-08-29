@@ -24,7 +24,7 @@ The 1st one is using gitpod , other with script
    Benefit of gitpod is you only need to install once and it is available everywhere.
    
 
-### Install with script
+### Install with script on Colab
 One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/install/run_install.sh) and other similar files
 for an automatic installation.
 
@@ -38,50 +38,53 @@ for an automatic installation.
 
 There are automatic runs to check if current repo is working or not.
 You can check the us here :
-    [Github Actions](https://github.com/arita37/mlmodels/actions)
+    [Testing details](https://github.com/arita37/mlmodels/blob/dev/README_testing.md)
 
+ Code source of test :  [Test source](https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py)   
 
+ 
 After install, Basic testing can be done with command line tool ```ml_test```.
+ml_test refers to mlmodels/ztest.py
 
 ### test_fast_linux : Basic Import check
 ```ml_test --do test_fast_linux```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_fast_linux.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_fast_linux.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_import)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/) 
 
 ### test_cli : Command Line Testing
 ```ml_test --do test_cli```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_cli.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_cli.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_test_cli)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
 ### test_dataloader : Test if dataloader works
 ```ml_test --do test_dataloader```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_dataloader.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_dataloader.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_dataloader)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
 ### test_jupyter : Test if jupyter notebooks works
 ```ml_test --do test_jupyter```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_jupyter.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_jupyter.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_jupyter)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
 ### test_benchmark : benchmark
 ```ml_test --do test_benchmark```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_benchmark.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_benchmark.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_benchmark)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
 ### test_pull_request : PR 
 ```ml_test --do test_jupyter```
 
-1. [YAML](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_pull_request.yml)
+1. [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows/test_pull_request.yml)
 2. [RAW LOGS](https://github.com/arita37/mlmodels_store/tree/master/log_pullrequest)
 3. [CLEAN LOGS](https://github.com/arita37/mlmodels_store/tree/master/error_list/)
 
@@ -95,11 +98,11 @@ work environment. See debugging part.
 
 
 
-## How to check if one model works ?
+## How to check if one specific model works ?
 <details>
 
 ### Run Model
-Run/Test newly added model on your local machine or on 
+Run/Test newly added model  on 
 [Gitpod](https://gitpod.io/) or [Colab](https://colab.research.google.com/).
 
 
@@ -107,11 +110,12 @@ Example of Gitpod use:
 ```bash
 source activate py36
 cd mlmodels
-python model_XXXX/yyyy.py  
+python model_tf/1_lstm.py  
 ```
 
-### Check Your Test Runs
-https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
+### Automatic test runs
+There are automatic test runs to check
+    [Testing details](https://github.com/arita37/mlmodels/blob/dev/README_testing.md)
 
 </details>
 <br/>
@@ -120,10 +124,14 @@ https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
 
 ## How the testing works ?
 <details>
-  
-  Github Actions --> Triggers some test runs in mlmodels/ztest.py 
-   --> Trigger some CLI or code using mlmodels 
-  --> Test logs is submitted to [mlmodels_store repo](https://github.com/arita37/mlmodels_store/blob/master/log_import/log_import.py)--> Logs are visible for manual check.
+  Testing follows those steps :
+
+  1) Github Actions --> Triggers some test runs in mlmodels/ztest.py 
+      [Github Actions](https://github.com/arita37/mlmodels/blob/dev/.github/workflows)
+
+  2) --> Trigger some CLI or code using mlmodels 
+  3) --> Test logs is submitted to [mlmodels_store repo](https://github.com/arita37/mlmodels_store/blob/master/log_import/log_import.py)
+  4) --> Logs are visible for manual check.
   
   
   
@@ -134,10 +142,6 @@ Automatic testing is enabled and results are described here :
 
 Code for testing all the repo is located here:
    https://github.com/arita37/mlmodels/blob/dev/mlmodels/ztest.py
-
-
-Github actions to run automatic test 
-
 
 
 </details>
@@ -173,7 +177,9 @@ https://github.com/arita37/mlmodels/blob/adata2/README_addmodel.md
 
 To add new model fork the repo. Inside the mlmodels directory we have multiple
 subdirectories named like model_keras, model_sklearn and so on the idea is to use
-**model_** before the type of framework you want to use. Now once you have decided the 
+**model_** before the type of framework you want to use. 
+
+Now once you have decided the 
 frame work create appripriately named model file and config file as described in the read me 
 doc [README_addmodel.md](docs\README_docs\README_addmodel.md). The same model structure 
 and config allows us to do the testing of all the models easily.
