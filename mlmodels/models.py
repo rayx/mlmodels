@@ -98,8 +98,8 @@ def module_load_full(model_uri="", model_pars=None, data_pars=None, compute_pars
       model_uri:  model_tf.1_lstm.py
     """
     module = module_load(model_uri=model_uri)
-    model = module.Model(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars, **kwarg)
-    return module, model
+    module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars, **kwarg)
+    return module
 
 
 def model_create(module, model_pars=None, data_pars=None, compute_pars=None, **kwarg):
@@ -110,11 +110,11 @@ def model_create(module, model_pars=None, data_pars=None, compute_pars=None, **k
     if model_pars is None:
         model_pars = module.get_params()
 
-    model = module.Model(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars, **kwarg)
-    return model
+    module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars, **kwarg)
+    return module
 
 
-def fit(module, model, sess=None, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
+def fit(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
     """
     Wrap fit generic method
     :type model: object
@@ -122,10 +122,10 @@ def fit(module, model, sess=None, data_pars=None, compute_pars=None, out_pars=No
 
     # module, model = module_load_full(model_uri, model_pars, data_pars, compute_pars)
     # sess=None
-    return module.fit(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars, **kwarg)
+    return module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars, **kwarg)
 
 
-def predict(module, model, sess=None, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
+def predict(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
     """
        predict  using a pre-trained model and some data
     :return:
@@ -133,19 +133,19 @@ def predict(module, model, sess=None, data_pars=None, compute_pars=None, out_par
     # module      = module_load(model_uri)
     # model,sess  = load(model_pars)
 
-    return module.predict(model, sess, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars, **kwarg)
+    return module.predict(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars, **kwarg)
 
 
-def fit_metrics(module, model, sess=None, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
-    return module.fit_metrics(model, sess, data_pars, compute_pars, out_pars, **kwarg)
+def fit_metrics(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
+    return module.fit_metrics(data_pars, compute_pars, out_pars, **kwarg)
 
 
 def get_params(module, params_pars, **kwarg):
     return module.get_params(params_pars, **kwarg)
 
 
-def metrics(module, model, sess=None, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
-    return module.metrics(model, sess, data_pars, compute_pars, out_pars, **kwarg)
+def metrics(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
+    return module.metrics(data_pars, compute_pars, out_pars, **kwarg)
 
 
 def load(module, load_pars, **kwarg):
@@ -156,11 +156,11 @@ def load(module, load_pars, **kwarg):
     return module.load(load_pars, **kwarg)
 
 
-def save(module, model, session, save_pars, **kwarg):
+def save(module, save_pars, **kwarg):
     """
        Save model/session on disk
     """
-    return module.save(model, session, save_pars, **kwarg)
+    return module.save(save_pars, **kwarg)
 
 
 ####################################################################################################

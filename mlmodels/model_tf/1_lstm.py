@@ -204,7 +204,7 @@ def save(save_pars=None):
     global model, session
     from mlmodels.util import save_tf
     print(save_pars)
-    save_tf(model, sessionion, save_pars)
+    save_tf(model, session, save_pars)
     d = {"model_pars"  :  model.model_pars, 
      "compute_pars":  model.compute_pars,
      "data_pars"   :  model.data_pars

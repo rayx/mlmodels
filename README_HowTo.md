@@ -36,6 +36,9 @@ for an automatic installation.
 ## How to check if mlmodels works ?
 <details>
 
+Status logs are available here :
+   [Test logs](https://github.com/arita37/mlmodels_store/tree/master/log_import)
+
 There are automatic runs to check if current repo is working or not.
 You can check the us here :
     [Testing details](https://github.com/arita37/mlmodels/blob/dev/README_testing.md)
