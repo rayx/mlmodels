@@ -35,7 +35,7 @@ global model, session
 
 
 ####################################################################################################
-def init(**kw,  **kwargs):
+def init(*kw,  **kwargs):
     global model, session
     model = Model(**kwargs)
     session = None
