@@ -1,6 +1,7 @@
 #### DL framework
 git+https://www.github.com/keras-team/keras-contrib.git
 mlflow==1.7.1
+fire==0.3.1  ### CLI automatic
 
 
 
