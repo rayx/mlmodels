@@ -15,10 +15,8 @@ Main characteristics :
 
   * Functional type interface : reduce boilerplate code, good for scientific computing.
   * JSON based input          : reduce boilerplate code, easy for experiment management.
-  * Focus to move research/script code to prod/batch 
+  * Focus to move research/script code to benchmark batch.
 
-
-We are looking for contributors (!!)
 
 
 ![alt text](docs/imgs/mxnetf.png) ![alt text](docs/imgs/pytorch.PNG) ![alt text](docs/imgs/tenserflow.PNG)
