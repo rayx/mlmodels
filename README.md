@@ -31,12 +31,12 @@ Having a simple  framework for both machine learning models and deep learning mo
 of MLMODELS. Different domain fields are available, such as computer vision, NLP, Time Series prediction, tabular data classification.  
 
 
+#### How to Start :
+    [guide](https://cutt.ly/4fhyQxB)
 
-Here you can find some How to Start [guide](https://cutt.ly/4fhyQxB)
 
-
-*We are Looking for Contributors and repo mainteners :*
-If you want to contribute,  [contribution guide](https://cutt.ly/4fhyQxB)
+#### We are Looking for Contributors and repo mainteners :
+    [contribution guide](https://cutt.ly/4fhyQxB)
 
 
 
