@@ -36,6 +36,11 @@ for an automatic installation.
 ## How to check if mlmodels works ?
 <details>
 
+There are automatic runs to check if current repo is working or not.
+You can check the us here :
+    [Github Actions](https://github.com/arita37/mlmodels/actions)
+
+
 After install, Basic testing can be done with command line tool ```ml_test```.
 
 ### test_fast_linux : Basic Import check
