@@ -118,7 +118,7 @@ def optim_optuna(model_uri="model_tf.1_lstm.py",
     log(module)
 
     def objective(trial):
-        log("check", module, data_pars)
+        # log("check", module, data_pars)
         for t, p in hypermodel_pars.items():
 
             if t == 'engine_pars': continue  ##Skip
@@ -140,14 +140,12 @@ def optim_optuna(model_uri="model_tf.1_lstm.py",
 
             model_pars[t] = pres
 
-        model = model_create(module, model_pars, data_pars, compute_pars)  # module.Model(**param_dict)
+        module = model_create(module, model_pars, data_pars, compute_pars)  # module.Model(**param_dict)
         if VERBOSE: log(model)
 
-        model, sess = module.fit(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
-        metrics = module.fit_metrics(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+        module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+        metrics = module.fit_metrics(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
         mtarget = metrics[metric_target]
-
-        del sess, model
         try:
             module.reset_model()  # Reset Graph for TF
         except Exception as e:
@@ -187,14 +185,14 @@ def optim_optuna(model_uri="model_tf.1_lstm.py",
     model_pars_update.update(param_dict_best)
     model_pars_update["model_name"] = model_name  ###SKLearn model
 
-    model = model_create(module, model_pars_update, data_pars, compute_pars)
-    model, sess = module.fit(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+    module = model_create(module, model_pars_update, data_pars, compute_pars)
+    module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 
     log("#### Saving     ###########################################################")
     model_uri = model_uri.replace(".", "-")
     save_pars = {'path': save_path, 'model_type': model_uri.split("-")[0], 'model_uri': model_uri}
-    module.save(model=model, session=sess, save_pars=save_pars)
+    module.save(save_pars=save_pars)
 
     #log( os.stats(save_path))
     ## model_pars_update["model_name"] = model_name
