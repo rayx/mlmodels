@@ -35,7 +35,7 @@ Collection of Keras implementations of Generative Adversarial Networks (GANs) su
 ## Installation
     $ git clone https://github.com/eriklindernoren/Keras-GAN
     $ cd Keras-GAN/
-    $ sudo pip3 install -r requirements.txt
+    $ sudo pip3 install -r install/requirements.txt
 
 ## Implementations   
 ### AC-GAN

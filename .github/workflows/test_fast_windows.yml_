@@ -57,7 +57,7 @@ jobs:
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run: |
            pip install -r requirements_wi.txt
-           pip install -r requirements_fake.txt
+           pip install -r install/requirements_fake.txt
 
 
     - name: Install repo

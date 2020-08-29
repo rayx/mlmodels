@@ -15,7 +15,7 @@ Kim's CharCNN was originally part of an end-to-end trained pipeline for language
 1. Install dependencies (Tensorflow 1.3 and Keras 2.1.3):
 
 ```
-$ pip install -r requirements.txt
+$ pip install -r install/requirements.txt
 ```
 
 2. Specify the training and testing data sources and model hyperparameters in the `config.json` file.

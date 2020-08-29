@@ -27,7 +27,7 @@ git clone git@github.com:arita37/da.git
 cd da
 virtualenv -p python3 daenv
 daenv/bin/activate
-pip install -r requirements.txt
+pip install -r install/requirements.txt
 cd docs/
 make html
 open file in the browser as file:///<clonedir>/da/docs/build/html/index.html
@@ -50,7 +50,7 @@ git clean -d -f -f
 python3.7 -mvirtualenv --system-site-packages --no-download /home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest
 /home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/python -m pip install --upgrade --cache-dir /home/docs/checkouts/readthedocs.org/user_builds/dsa/.cache/pip pip
 /home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/python -m pip install --upgrade --cache-dir /home/docs/checkouts/readthedocs.org/user_builds/dsa/.cache/pip -I Pygments==2.3.1 setuptools==41.0.1 docutils==0.14 mock==1.0.1 pillow==5.4.1 alabaster>=0.7,<0.8,!=0.7.5 commonmark==0.8.1 recommonmark==0.5.0 sphinx<2 sphinx-rtd-theme<0.5 readthedocs-sphinx-ext<1.1
-/home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/python -m pip install --exists-action=w --cache-dir /home/docs/checkouts/readthedocs.org/user_builds/dsa/.cache/pip -r requirements.txt
+/home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/python -m pip install --exists-action=w --cache-dir /home/docs/checkouts/readthedocs.org/user_builds/dsa/.cache/pip -r install/requirements.txt
 /home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/python /home/docs/checkouts/readthedocs.org/user_builds/dsa/checkouts/latest/setup.py install --force
 cat docs/source/conf.py
 python /home/docs/checkouts/readthedocs.org/user_builds/dsa/envs/latest/bin/sphinx-build -T -b readthedocs -d _build/doctrees-readthedocs -D language=en . _build/html

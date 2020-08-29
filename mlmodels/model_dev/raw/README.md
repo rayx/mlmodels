@@ -34,7 +34,7 @@
 Tensorflow version 1.13 and above only, not included 2.X version. 1.13 < Tensorflow < 2.0 
 
 ```bash
-pip install -r requirements.txt
+pip install -r install/requirements.txt
 ```
 
 ## Contents

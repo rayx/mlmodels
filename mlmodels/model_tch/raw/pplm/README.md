@@ -16,7 +16,7 @@ See also our [arXiv paper](https://arxiv.org/abs/1912.02164), [blog post](https:
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install -r install/requirements.txt
 ```
 
 ## Citation

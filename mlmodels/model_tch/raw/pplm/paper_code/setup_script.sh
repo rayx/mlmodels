@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python -m pip install requirements.txt
+python -m pip install install/requirements.txt
 g#it clone https://github.com/circulosmeos/gdown.pl.git
 c#d gdown.pl
 .#/gdown.pl https://drive.google.com/open?id=15TvAxA8TS8nn1lCzpVPn-Myp5RDlJiHF gpt2

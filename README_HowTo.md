@@ -19,7 +19,7 @@ There are two types of installations for ```mlmodels```.
 The first is a manual controlled installation, the second is an automatic shell installation.
 
 ### Manual installation
-The manual installation is dependant on [requirements.txt](https://github.com/arita37/mlmodels/blob/dev/requirements.txt)
+The manual installation is dependant on [install/requirements.txt](https://github.com/arita37/mlmodels/blob/dev/install/requirements.txt)
 and other similar text files.
 
 Preview:
@@ -34,14 +34,14 @@ numexpr>=2.6.8
 ```bash
 Linux/MacOS
 pip install numpy<=1.17.0
-pip install -e .  -r requirements.txt
-pip install   -r requirements_fake.txt
+pip install -e .  -r install/requirements.txt
+pip install   -r install/requirements_fake.txt
 
 Windows (use WSL + Linux)
 pip install numpy<=1.17.0
 pip install torch==1..1 -f https://download.pytorch.org/whl/torch_stable.html
 pip install -e .  -r requirements_wi.txt
-pip install   -r requirements_fake.txt
+pip install   -r install/requirements_fake.txt
 ```
 
 ### Automatic installation

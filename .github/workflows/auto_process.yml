@@ -48,7 +48,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: /opt/hostedtoolcache/Python/
-        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/requirements_fake.txt') }}
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/install/requirements_fake.txt') }}
 
           
     - name: Install Python ENV

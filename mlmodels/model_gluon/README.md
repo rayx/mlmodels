@@ -1,6 +1,6 @@
 # Gluon models 
 ```  
-requirements.txt
+install/requirements.txt
 
 autogluon
 gluonts

@@ -49,7 +49,7 @@ def module_env_build(model_uri="", verbose=0, do_env_build=0):
     if verbose:
         print(model_uri)
 
-    #### Dynamic ENV Build based on requirements.txt
+    #### Dynamic ENV Build based on install/requirements.txt
     if do_env_build:
         env_pars = {"python_version": '3.6.5'}
         env_build(model_uri, env_pars)

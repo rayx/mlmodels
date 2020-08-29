@@ -45,7 +45,7 @@ print("version", version)
 
 
 ######################################################################################
-with open('requirements.txt') as fp:
+with open('install/requirements.txt') as fp:
     install_requires = fp.read()
 
 
@@ -230,7 +230,7 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 
 # required packages for NLP Architect
-with open('requirements.txt') as fp:
+with open('install/requirements.txt') as fp:
     install_requirements = fp.readlines()
 
 # check if GPU available
@@ -312,7 +312,7 @@ packages = ['elfi'] + ['elfi.' + p for p in find_packages('elfi')]
 # include C++ examples
 package_data = {'elfi.examples': ['cpp/Makefile', 'cpp/*.txt', 'cpp/*.cpp']}
 
-with open('requirements.txt', 'r') as f:
+with open('install/requirements.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 optionals = {'doc': ['Sphinx'], 'graphviz': ['graphviz>=0.7.1']}

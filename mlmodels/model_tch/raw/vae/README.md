@@ -33,7 +33,7 @@ Improvement: 20 times faster
 
 
 ## Enviornment of Implementation
-see [npz_requirements.txt](./npz_requirements.txt)
+see [npz_install/requirements.txt](./npz_install/requirements.txt)
 
 
 ## 3rd submission: Inference Net

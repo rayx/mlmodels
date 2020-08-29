@@ -121,8 +121,8 @@ ________________________________________________________________________________
 # Manual Installation
     ### On Linux/MacOS
     pip install numpy<=1.17.0
-    pip install -e .  -r requirements.txt
-    pip install   -r requirements_fake.txt
+    pip install -e .  -r install/requirements.txt
+    pip install   -r install/requirements_fake.txt
 
 
     ### On Windows
@@ -130,7 +130,7 @@ ________________________________________________________________________________
     pip install numpy<=1.17.0
     pip install torch==1..1 -f https://download.pytorch.org/whl/torch_stable.html
     pip install -e .  -r requirements_wi.txt
-    pip install   -r requirements_fake.txt
+    pip install   -r install/requirements_fake.txt
 
 
 ___________________________________________________________________________________________

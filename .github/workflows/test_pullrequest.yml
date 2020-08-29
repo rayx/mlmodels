@@ -47,7 +47,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: /opt/hostedtoolcache/Python/
-        key: ${{ runner.os }}-venv-mlmodels-${{ hashFiles('**/requirements_fake.txt') }}
+        key: ${{ runner.os }}-venv-mlmodels-${{ hashFiles('**/install/requirements_fake.txt') }}
 
 
     - name: Install numpy
@@ -57,17 +57,17 @@ jobs:
     - name: Install repo requirements 1
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run:  |
-        pip install -r requirements.txt
+        pip install -r install/requirements.txt
 
 
     - name: Install repo requirements   2
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run:  |
-        pip install -r requirements_fake.txt
+        pip install -r install/requirements_fake.txt
 
 
     - name: Install repo
-      run: pip install -e . -r requirements.txt   --no-deps
+      run: pip install -e . -r install/requirements.txt   --no-deps
 
 
     - name: run_basic_check.py

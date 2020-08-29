@@ -323,7 +323,7 @@ def env_conda_build(env_pars=None):
 def env_pip_requirement(env_pars=None):
     from time import sleep
     if env_pars is None:
-        env_pars = {'name': "test", 'requirement': 'requirements.txt'}
+        env_pars = {'name': "test", 'requirement': 'install/requirements.txt'}
 
     root_path = os_package_root_path(__file__)
     p = env_pars
@@ -340,7 +340,7 @@ def env_pip_check(env_pars=None):
     from importlib import import_module
 
     if env_pars is None:
-        env_pars = {'name': "test", 'requirement': 'requirements.txt', "import": ['tensorflow', 'sklearn']}
+        env_pars = {'name': "test", 'requirement': 'install/requirements.txt', "import": ['tensorflow', 'sklearn']}
 
     flag = 0
     try:
@@ -362,7 +362,7 @@ def env_build(model_uri, env_pars):
 
     env_pars['name'] = model_uri2
     env_pars['python_version'] = "3.6.5"
-    env_pars['file_requirement'] = model_path + "/requirements.txt"
+    env_pars['file_requirement'] = model_path + "/install/requirements.txt"
 
     env_conda_build(env_pars=env_pars)
     sleep(60)

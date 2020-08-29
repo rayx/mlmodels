@@ -153,3 +153,4 @@ example/exp
 /zvscode.code-workspace
 /mlmodels/dataset/vision/MNIST/MNIST/processed
 /mlmodels/dataset/vision/MNIST/MNIST/raw
+/ztmp

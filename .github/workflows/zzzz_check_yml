@@ -49,7 +49,7 @@ jobs:
     #  id: cache
     #  with:
     #    path: ~/.cache/pip
-    #    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    #    key: ${{ runner.os }}-pip-${{ hashFiles('**/install/requirements.txt') }}
     #    restore-keys: |
     #      ${{ runner.os }}-pip-
    
@@ -60,7 +60,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: /opt/hostedtoolcache/Python/
-        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/requirements_fake.txt') }}
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/install/requirements_fake.txt') }}
 
           
     - name: repo path
@@ -70,7 +70,7 @@ jobs:
       
       
     - name: Install repo
-      run: pip install -e . -r requirements.txt  --no-deps
+      run: pip install -e . -r install/requirements.txt  --no-deps
 
 
     ########  Test running for ALL Command Line

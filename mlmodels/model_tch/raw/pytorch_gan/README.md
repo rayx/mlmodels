@@ -44,7 +44,7 @@ Collection of PyTorch implementations of Generative Adversarial Network varietie
 ## Installation
     $ git clone https://github.com/eriklindernoren/PyTorch-GAN
     $ cd PyTorch-GAN/
-    $ sudo pip3 install -r requirements.txt
+    $ sudo pip3 install -r install/requirements.txt
 
 ## Implementations   
 ### Auxiliary Classifier GAN

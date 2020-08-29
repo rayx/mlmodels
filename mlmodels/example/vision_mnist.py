@@ -22,8 +22,8 @@ cd mlmodels/
 
 !pip install  git+https://github.com/arita37/mlmodels.git
 
-!wget https://raw.githubusercontent.com/arita37/mlmodels/dev/requirements_fake.txt
-!pip install -r requirements_fake.txt
+!wget https://raw.githubusercontent.com/arita37/mlmodels/dev/install/requirements_fake.txt
+!pip install -r install/requirements_fake.txt
 
 !ls
 
