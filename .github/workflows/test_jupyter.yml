@@ -91,7 +91,7 @@ jobs:
 
 
     - name: Repo path
-      run: python  run_basic_check.py
+      run: python  install/run_basic_check.py
 
 
     ########  Test running 

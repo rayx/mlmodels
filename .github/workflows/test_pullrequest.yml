@@ -70,8 +70,8 @@ jobs:
       run: pip install -e . -r install/requirements.txt   --no-deps
 
 
-    - name: run_basic_check.py
-      run: python run_basic_check.py
+    - name: install/run_basic_check.py
+      run: python install/run_basic_check.py
 
 
     ########  Test running 
