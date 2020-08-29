@@ -129,7 +129,7 @@ https://github.com/arita37/mlmodels/actions?query=workflow%3Atest_custom_model
   
 Automatic testing is enabled and results are described here :
 
-    https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
+   https://github.com/arita37/mlmodels/blob/adata2/README_testing.md
 
 
 Code for testing all the repo is located here:
