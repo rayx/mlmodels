@@ -16,36 +16,15 @@ This howto.md file.
 <details>
 
 There are two types of installations for ```mlmodels```.
-The first is a manual controlled installation, the second is an automatic shell installation.
+The 1st one is using gitpod , other with script
 
-### Manual installation
-The manual installation is dependant on [install/requirements.txt](https://github.com/arita37/mlmodels/blob/dev/install/requirements.txt)
-and other similar text files.
-
-Preview:
-```bash
-pandas<1.0
-scipy>=1.3.0
-scikit-learn==0.21.2
-numexpr>=2.6.8
-```
+### Install with gitpod
+   [ Gitpod install ](https://github.com/arita37/mlmodels/issues/101)
 
 
-```bash
-Linux/MacOS
-pip install numpy<=1.17.0
-pip install -e .  -r install/requirements.txt
-pip install   -r install/requirements_fake.txt
 
-Windows (use WSL + Linux)
-pip install numpy<=1.17.0
-pip install torch==1..1 -f https://download.pytorch.org/whl/torch_stable.html
-pip install -e .  -r requirements_wi.txt
-pip install   -r install/requirements_fake.txt
-```
-
-### Automatic installation
-One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/run_install.sh) and other similar files
+### Install with script
+One can also use the [run_install.sh](https://github.com/arita37/mlmodels/blob/dev/install/run_install.sh) and other similar files
 for an automatic installation.
 
 </details>
@@ -53,7 +32,7 @@ for an automatic installation.
 
 
 
-## How to check if mlmodels works ?
+## How to check if mhttps://github.com/arita37/mlmodels/issues/101)lmodels works ?
 <details>
 
 Basic testing can be done with command line tool ```ml_test```.
@@ -374,17 +353,37 @@ all developpers are very active a,d will get back to you quickly.
 
 
 
+### Manual installation
+The manual installation is dependant on [install/requirements.txt](https://github.com/arita37/mlmodels/blob/dev/install/requirements.txt)
+and other similar text files.
+
+Preview:
+```bash
+pandas<1.0
+scipy>=1.3.0
+scikit-learn==0.21.2
+numexpr>=2.6.8
+```
+
+
+```bash
+Linux/MacOS
+pip install numpy<=1.17.0
+pip install -e .  -r install/requirements.txt
+pip install   -r install/requirements_fake.txt
+
+Windows (use WSL + Linux)
+pip install numpy<=1.17.0
+pip install torch==1..1 -f https://download.pytorch.org/whl/torch_stable.html
+pip install -e .  -r requirements_wi.txt
+pip install   -r install/requirements_fake.txt
+```
+
+
+
+
 </details>
 <br/>
-
-
-
-
-
-
-
-
-
 
 
 
