@@ -310,15 +310,15 @@ ml_models --do predict --config_file model_tf/1_lstm.json --config_mode "test"
 But this is individual testing that we can do to debug our model when we find an error in automatic the test logs.
 
 We have automated testing in our repo and the results are stored in here https://github.com/arita37/mlmodels_store We havemultiple level logs and they are put under different directories as you can see here, log folders have **logs_** at the start.
-![Mlmodels Store](imgs/test_repo.PNG?raw=true "Mlmodels Store")
+![Mlmodels Store](docs/imgs/test_repo.PNG?raw=true "Mlmodels Store")
 We can focus on the error_list directory to debug our testing errors. Inside the error_list directory we can find the logs of all test cases in directories named at the time they are created
-![Error List](imgs/error_list.PNG?raw=true "Error List")
+![Error List](docs/imgs/error_list.PNG?raw=true "Error List")
 Inside we can see separate files for each test cases which will have the details of the errors.
-![Error Logs](imgs/error_logs.PNG?raw=true "Error logs")
+![Error Logs](docs/imgs/error_logs.PNG?raw=true "Error logs")
 For example we can look at the errors for test cli cases named as list_log_test_cli_20200610.md
-![Error](imgs/test_cli_error.PNG?raw=true "Error")
+![Error](docs/imgs/test_cli_error.PNG?raw=true "Error")
 We see multiple erros and we can click on the traceback for error 1 which will take us to the line 421 of the log file.
-![Error Line](imgs/error_line.PNG?raw=true "Error Line")
+![Error Line](docs/imgs/error_line.PNG?raw=true "Error Line")
 We can see that while running the test case at line 418 caused the error, and we can see the error. 
 ```
 ml_models --do fit  --config_file dataset/json/benchmark_timeseries/gluonts_m4.json --config_mode "deepar" 

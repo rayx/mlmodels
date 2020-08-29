@@ -21,7 +21,7 @@ Main characteristics :
 We are looking for contributors (!!)
 
 
-![alt text](docs/mxnetf.png) ![alt text](docs/pytorch.PNG) ![alt text](docs/tenserflow.PNG)
+![alt text](docs/imgs/mxnetf.png) ![alt text](docs/imgs/pytorch.PNG) ![alt text](docs/imgs/tenserflow.PNG)
 
 ## Benefits of mlmodels repo :
 ---
@@ -32,10 +32,13 @@ of MLMODELS. Different domain fields are available, such as computer vision, NLP
 
 
 
-Here you can find usages [guide](https://cutt.ly/tyluzof)
+Here you can find some How to Start [guide](https://cutt.ly/4fhyQxB)
 
 
-If you want to contribute,  [contribution guide](https://cutt.ly/Xylux3Q)
+*We are Looking for Contributors and repo mainteners :*
+If you want to contribute,  [contribution guide](https://cutt.ly/4fhyQxB)
+
+
 
 ## Model List :
 ---
