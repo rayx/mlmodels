@@ -33,10 +33,10 @@ for an automatic installation.
 
 
 
-## How to check if mhttps://github.com/arita37/mlmodels/issues/101)lmodels works ?
+## How to check if mlmodels works ?
 <details>
 
-Basic testing can be done with command line tool ```ml_test```.
+After install, Basic testing can be done with command line tool ```ml_test```.
 
 ### test_fast_linux : Basic Import check
 ```ml_test --do test_fast_linux```
