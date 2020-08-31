@@ -301,8 +301,8 @@ def csv_to_json(csv):
         dicts.append(dd)
 
     paths = list(ddf['file_path'])
-    cur_dir=os.getcwd()
-    os.chdir(cur_dir+'\\dataset')
+    cur_dir=os_package_root_path()
+    os.chdir(cur_dir+'dataset')
     new_paths = []
     for i in range(len(paths)):
         lp = paths[i].split('\\')
@@ -336,6 +336,3 @@ def test_json_conversion():
 # Testing code
 if __name__ == "__main__":
     New_dicts=test_json_conversion()
-
-
-
