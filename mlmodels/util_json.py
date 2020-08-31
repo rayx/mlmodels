@@ -3,14 +3,16 @@
 Alll related to json dynamic parsing
 
 
-"""# -*- coding: utf-8 -*-
+"""  # -*- coding: utf-8 -*-
 import os
 import re
 import fnmatch
 
 # import toml
 from pathlib import Path
-from jsoncomment import JsonComment ; json = JsonComment()
+from jsoncomment import JsonComment;
+
+json = JsonComment()
 
 import importlib
 from inspect import getmembers
@@ -41,7 +43,7 @@ def os_package_root_path(filepath="", sublevel=0, path_add=""):
        get the module package root folder
     """
     from pathlib import Path
-    import mlmodels, os, inspect 
+    import mlmodels, os, inspect
 
     path = Path(inspect.getfile(mlmodels)).parent
     # print( path )
@@ -55,15 +57,16 @@ def os_package_root_path(filepath="", sublevel=0, path_add=""):
 
 
 ###################################################################################################
-def params_json_load(path, config_mode="test", 
-                     tlist= [ "model_pars", "data_pars", "compute_pars", "out_pars"] ):
-    from jsoncomment import JsonComment ; json = JsonComment()
+def params_json_load(path, config_mode="test",
+                     tlist=["model_pars", "data_pars", "compute_pars", "out_pars"]):
+    from jsoncomment import JsonComment;
+    json = JsonComment()
     pars = json.load(open(path, mode="r"))
     pars = pars[config_mode]
 
     ### HyperParam, model_pars, data_pars,
     list_pars = []
-    for t in tlist :
+    for t in tlist:
         pdict = pars.get(t)
         if pdict:
             list_pars.append(pdict)
@@ -72,12 +75,12 @@ def params_json_load(path, config_mode="test",
 
     return tuple(list_pars)
 
+
 #########################################################################################
 #########################################################################################
 def load_function(package="mlmodels.util", name="path_norm"):
-  import importlib
-  return  getattr(importlib.import_module(package), name)
-
+    import importlib
+    return getattr(importlib.import_module(package), name)
 
 
 def load_function_uri(uri_name="path_norm"):
@@ -92,41 +95,41 @@ def load_function_uri(uri_name="path_norm"):
 
 
     """
-    
+
     import importlib, sys
     from pathlib import Path
     pkg = uri_name.split(":")
 
     assert len(pkg) > 1, "  Missing :   in  uri_name module_name:function_or_class "
     package, name = pkg[0], pkg[1]
-    
+
     try:
         #### Import from package mlmodels sub-folder
-        return  getattr(importlib.import_module(package), name)
+        return getattr(importlib.import_module(package), name)
 
     except Exception as e1:
         try:
             ### Add Folder to Path and Load absoluate path module
             path_parent = str(Path(package).parent.parent.absolute())
             sys.path.append(path_parent)
-            #log(path_parent)
+            # log(path_parent)
 
             #### import Absolute Path model_tf.1_lstm
-            model_name   = Path(package).stem  # remove .py
+            model_name = Path(package).stem  # remove .py
             package_name = str(Path(package).parts[-2]) + "." + str(model_name)
-            #log(package_name, model_name)
-            return  getattr(importlib.import_module(package_name), name)
+            # log(package_name, model_name)
+            return getattr(importlib.import_module(package_name), name)
 
         except Exception as e2:
             raise NameError(f"Module {pkg} notfound, {e1}, {e2}")
 
 
 def load_callable_from_uri(uri):
-    assert(len(uri)>0 and ('::' in uri or '.' in uri))
+    assert (len(uri) > 0 and ('::' in uri or '.' in uri))
     if '::' in uri:
         module_path, callable_name = uri.split('::')
     else:
-        module_path, callable_name = uri.rsplit('.',1)
+        module_path, callable_name = uri.rsplit('.', 1)
     if os.path.isfile(module_path):
         module_name = '.'.join(module_path.split('.')[:-1])
         spec = importlib.util.spec_from_file_location(module_name, module_path)
@@ -135,14 +138,14 @@ def load_callable_from_uri(uri):
     else:
         module = importlib.import_module(module_path)
     return dict(getmembers(module))[callable_name]
-        
+
 
 def load_callable_from_dict(function_dict, return_other_keys=False):
     function_dict = function_dict.copy()
     uri = function_dict.pop('uri')
     func = load_callable_from_uri(uri)
     try:
-        assert(callable(func))
+        assert (callable(func))
     except:
         raise TypeError(f'{func} is not callable')
     arg = function_dict.pop('arg', {})
@@ -150,43 +153,46 @@ def load_callable_from_dict(function_dict, return_other_keys=False):
         return func, arg
     else:
         return func, arg, function_dict
-    
-
 
 
 def test_functions_json(arg=None):
-  from mlmodels.util import load_function_uri
+    from mlmodels.util import load_function_uri
 
-  path = path_norm("dataset/test_json/test_functions.json")
-  dd   = json.load(open( path ))['test']
-  
-  for p in dd  :
-     try :
-         log("\n\n","#"*20, p)
+    path = path_norm("dataset/test_json/test_functions.json")
+    dd = json.load(open(path))['test']
 
-         myfun = load_function_uri( p['uri'])
-         log(myfun)
+    for p in dd:
+        try:
+            log("\n\n", "#" * 20, p)
 
-         w  = p.get('args', []) 
-         kw = p.get('kw_args', {} )
-         
-         if len(kw) == 0 and len(w) == 0   : log( myfun())
+            myfun = load_function_uri(p['uri'])
+            log(myfun)
 
-         elif  len(kw) > 0 and len(w) > 0  : log( myfun( *w,  ** kw ))
+            w = p.get('args', [])
+            kw = p.get('kw_args', {})
 
-         elif  len(kw) > 0 and len(w) == 0 : log( myfun( ** kw ))
+            if len(kw) == 0 and len(w) == 0:
+                log(myfun())
 
-         elif  len(kw) == 0 and len(w) > 0 : log( myfun( *w ))
-                     
-            
-     except Exception as e:
-        log(e, p )    
+            elif len(kw) > 0 and len(w) > 0:
+                log(myfun(*w, **kw))
+
+            elif len(kw) > 0 and len(w) == 0:
+                log(myfun(**kw))
+
+            elif len(kw) == 0 and len(w) > 0:
+                log(myfun(*w))
+
+
+        except Exception as e:
+            log(e, p)
 
 
 import json
 import os
 import pandas as pd
 import time
+
 
 def os_folder_getall(folder):
     """
@@ -294,9 +300,9 @@ def csv_to_skeleton(csv):
     :return: dictionary containing the dictionary skeleton of the csv filled with None values
     :rtype: dict
     """
-    df = pd.read_csv(csv)
+    ddf = pd.read_csv(csv)
     d = dict()
-    fullname = list(df.columns)[3:]
+    fullname = list(ddf.columns)[3:]
     for j in range(len(fullname)):
         l = fullname[j].split('.')
         d = dict_update(l, d, None)
@@ -355,12 +361,11 @@ def csv_to_json(csv):
     return dicts
 
 
-
 # Testing code
 if __name__ == "__main__":
-    json_path=path_norm("dataset\\json")
+    json_path = path_norm("dataset\\json")
     jsons_paths = os_folder_getall(json_path)
-    indexed_dictionaries=json_todict(jsons_paths)
+    indexed_dictionaries = json_todict(jsons_paths)
     df = dicts_to_df(indexed_dictionaries)
     df.to_csv('Jsons_Csv.csv')
     print('csv created successfully')
