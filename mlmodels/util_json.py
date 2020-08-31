@@ -187,8 +187,6 @@ import json
 import os
 import pandas as pd
 import time
-from util import *
-from util import path_norm
 
 def os_folder_getall(folder):
     """
