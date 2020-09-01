@@ -1,8 +1,5 @@
 """
-
 Alll related to json dynamic parsing
-
-
 """# -*- coding: utf-8 -*-
 import os
 import re
@@ -83,14 +80,10 @@ def load_function(package="mlmodels.util", name="path_norm"):
 def load_function_uri(uri_name="path_norm"):
     """
     #load dynamically function from URI
-
     ###### Pandas CSV case : Custom MLMODELS One
     #"dataset"        : "mlmodels.preprocess.generic:pandasDataset"
-
     ###### External File processor :
     #"dataset"        : "MyFolder/preprocess/myfile.py:pandasDataset"
-
-
     """
 
     import importlib, sys
@@ -181,7 +174,6 @@ def test_functions_json(arg=None):
 
      except Exception as e:
         log(e, p )
-
 
 import json
 import os
