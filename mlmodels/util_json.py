@@ -301,8 +301,9 @@ def csv_to_json(csv):
         dicts.append(dd)
 
     paths = list(ddf['file_path'])
-    cur_dir=os_package_root_path()
-    os.chdir(cur_dir+'dataset')
+    dataset_dir = os_package_root_path()+'dataset'
+    os.chdir(dataset_dir)
+    paths = [p[len(dataset_dir)+1:] for p in paths]
     new_paths = []
     for i in range(len(paths)):
         lp = paths[i].split('\\')
@@ -325,7 +326,8 @@ def test_json_conversion():
     Function to test converting jsons in dataset/json to normalized jsons
     :rtype: list of normalized jsons as dictionaries
     """
-    jsons_paths = os_folder_getfiles("dataset\\json")
+    json_folder_path = path_norm("dataset\\json")
+    jsons_paths = os_folder_getfiles(json_folder_path)
     df = jsons_to_df(jsons_paths)
     df.to_csv('Jsons_Csv.csv')
     print('csv created successfully')
@@ -335,4 +337,4 @@ def test_json_conversion():
 
 # Testing code
 if __name__ == "__main__":
-    New_dicts=test_json_conversion()
+    New_dicts = test_json_conversion()
