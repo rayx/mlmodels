@@ -184,3 +184,159 @@ def test_functions_json(arg=None):
 
 
 
+import json
+import os
+import pandas as pd
+import time
+
+
+def os_folder_getfiles(folder):
+    """
+
+    :param folder: path of folder from which we want to extract all files paths
+    :type folder: str
+    :return: list of all files paths in folder
+    :rtype: list of str
+    """
+    files_list = os.listdir(folder)
+    all_files = list()
+    for entry in files_list:
+        full_path = os.path.join(folder, entry)
+        if os.path.isdir(full_path):
+            all_files = all_files + os_folder_getfiles(full_path)
+        else:
+            all_files.append(full_path)
+
+    return all_files
+
+
+def jsons_to_df(json_paths):
+    """
+
+    :param json_paths: list of json paths
+    :type json_paths: list of str
+    :return: DataFrame of the jsons
+    :rtype: DataFrame
+    """
+    indexed_dicts = []
+    problem = 0
+    for i in range(len(json_paths)):
+        try:
+            with open(json_paths[i]) as json_file:
+                d = dict()
+                d['Path'] = json_paths[i]
+                d['Json'] = json.load(json_file)
+                indexed_dicts.append(d)
+        except:
+            if problem == 0:
+                print("Files That have a structure problem:\n")
+            problem += 1
+            print('\t', json_paths[i])
+            continue
+    print("Total flawed jsons:\t", problem)
+    all_jsons = []
+    for i in range(len(indexed_dicts)):
+        all_jsons.append(indexed_dicts[i]['Json'])
+    paths = []
+    filenames = []
+    for i in range(len(indexed_dicts)):
+        paths.append(indexed_dicts[i]['Path'])
+    for i in range(len(indexed_dicts)):
+        filename = indexed_dicts[i]['Path'].split('\\')[-1].split('.json')[0]
+        filenames.append(filename)
+
+    ddf = pd.json_normalize(all_jsons)
+    df1 = pd.DataFrame({'file_path': paths, 'json_name': filenames})
+    result = pd.concat([df1, ddf], axis=1)
+    print("Dataframe created successfully")
+    return result
+
+
+def dict_update(fields_list, d, value):
+    """
+
+    :param fields_list: list of hierarchically sorted dictionary fields leading to value to be modified
+    :type fields_list: list of str
+    :param d: dictionary to be modified
+    :type d: dict
+    :param value: new value
+    :type value: any type
+    :return: updated dictionary
+    :rtype: dict
+    """
+    if len(fields_list) > 1:
+        l1 = fields_list[1:]
+        k = fields_list[0]
+        if k not in list(d.keys()):
+            d[k] = dict()
+        d[k] = dict_update(l1, d[k], value)
+    else:
+        k = fields_list[0]
+        d[k] = value
+        return d
+    return d
+
+
+def csv_to_json(csv):
+    """
+
+    :param csv: csv file (needs to be in current repository), containing jsons to be normalized
+    :type csv: str
+    :return: list of normalized jsons as dictionaries
+    :rtype: list of dicts
+    """
+    dicts = []
+    ddf = pd.read_csv(csv)
+    fullname = list(ddf.columns)[3:]
+    filename = list(ddf['json_name'])
+    for i in range(len(filename)):
+        dd = dict()
+        fullname = list(ddf.columns)[3:]
+        for j in range(len(fullname)):
+            l = fullname[j].split('.')
+            dd = dict_update(l, dd, None)
+        for j in range(len(fullname)):
+            value = ddf.iloc[i][fullname[j]]
+            fields = fullname[j].split('.')
+            dd.update(dict_update(fields, dd, value).copy())
+        dicts.append(dd)
+
+    paths = list(ddf['file_path'])
+    dataset_dir = os_package_root_path()+'dataset'
+    os.chdir(dataset_dir)
+    paths = [p[len(dataset_dir)+1:] for p in paths]
+    new_paths = []
+    for i in range(len(paths)):
+        lp = paths[i].split('\\')
+        lp[0]='normalized_jsons'
+        dire = '\\'.join(''.join(i) for i in lp[:len(lp)-1])
+        new_paths.append(dire)
+    for p in list(set(new_paths)):
+        if not os.path.exists(p):
+            os.makedirs(p)
+
+    for i in range(len(filename)):
+        with open(new_paths[i] + '\\' + filename[i] + '.json', 'w') as fp:
+            json.dump(dicts[i], fp, indent=4)
+    print("New normalized jsons created, check mlmodels\\mlmodels\\dataset")
+    return dicts
+
+
+def test_json_conversion():
+    """
+    Function to test converting jsons in dataset/json to normalized jsons
+    :rtype: list of normalized jsons as dictionaries
+    """
+    json_folder_path = path_norm("dataset\\json")
+    jsons_paths = os_folder_getfiles(json_folder_path)
+    df = jsons_to_df(jsons_paths)
+    df.to_csv('Jsons_Csv.csv')
+    print('csv created successfully')
+    time.sleep(1)
+    New_dicts = csv_to_json('Jsons_Csv.csv')
+    return New_dicts
+
+# Testing code
+if __name__ == "__main__":
+    New_dicts = test_json_conversion()
+    
