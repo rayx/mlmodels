@@ -41,7 +41,7 @@ def os_package_root_path(filepath="", sublevel=0, path_add=""):
        get the module package root folder
     """
     from pathlib import Path
-    import mlmodels, os, inspect
+    import mlmodels, os, inspect 
 
     path = Path(inspect.getfile(mlmodels)).parent
     # print( path )
@@ -55,7 +55,7 @@ def os_package_root_path(filepath="", sublevel=0, path_add=""):
 
 
 ###################################################################################################
-def params_json_load(path, config_mode="test",
+def params_json_load(path, config_mode="test", 
                      tlist= [ "model_pars", "data_pars", "compute_pars", "out_pars"] ):
     from jsoncomment import JsonComment ; json = JsonComment()
     pars = json.load(open(path, mode="r"))
@@ -92,14 +92,14 @@ def load_function_uri(uri_name="path_norm"):
 
 
     """
-
+    
     import importlib, sys
     from pathlib import Path
     pkg = uri_name.split(":")
 
     assert len(pkg) > 1, "  Missing :   in  uri_name module_name:function_or_class "
     package, name = pkg[0], pkg[1]
-
+    
     try:
         #### Import from package mlmodels sub-folder
         return  getattr(importlib.import_module(package), name)
@@ -135,7 +135,7 @@ def load_callable_from_uri(uri):
     else:
         module = importlib.import_module(module_path)
     return dict(getmembers(module))[callable_name]
-
+        
 
 def load_callable_from_dict(function_dict, return_other_keys=False):
     function_dict = function_dict.copy()
@@ -150,7 +150,7 @@ def load_callable_from_dict(function_dict, return_other_keys=False):
         return func, arg
     else:
         return func, arg, function_dict
-
+    
 
 
 
@@ -159,7 +159,7 @@ def test_functions_json(arg=None):
 
   path = path_norm("dataset/test_json/test_functions.json")
   dd   = json.load(open( path ))['test']
-
+  
   for p in dd  :
      try :
          log("\n\n","#"*20, p)
@@ -167,9 +167,9 @@ def test_functions_json(arg=None):
          myfun = load_function_uri( p['uri'])
          log(myfun)
 
-         w  = p.get('args', [])
+         w  = p.get('args', []) 
          kw = p.get('kw_args', {} )
-
+         
          if len(kw) == 0 and len(w) == 0   : log( myfun())
 
          elif  len(kw) > 0 and len(w) > 0  : log( myfun( *w,  ** kw ))
@@ -177,10 +177,11 @@ def test_functions_json(arg=None):
          elif  len(kw) > 0 and len(w) == 0 : log( myfun( ** kw ))
 
          elif  len(kw) == 0 and len(w) > 0 : log( myfun( *w ))
-
-
+                     
+            
      except Exception as e:
-        log(e, p )
+        log(e, p )    
+
 
 
 import json
