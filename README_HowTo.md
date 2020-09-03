@@ -10,7 +10,6 @@ A lit of Github Issues :
 
 
 ## A 1min example
-<details>
 ```python
 import mlmodels
 from mlmodels.models import module_load
@@ -32,7 +31,6 @@ module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars)  # Inference
 ypred         = module.predict(data_pars, compute_pars, out_pars)       # Predict pipeline
 ```
-</details>
 <br/>
 
 ## How to install mlmodels ?
