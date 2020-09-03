@@ -227,7 +227,7 @@ def jsons_to_df(json_paths):
             if(str(ddf[k][i]) != 'nan'):
                 d=dict()
                 d['file_path'] = indexed_dicts[i]['Path']
-                d['filename'] = indexed_dicts[i]['Path'].split("\\")[-1]
+                d['filename'] = os.path.basename(indexed_dicts[i]['Path'])
                 d['json_name'] = k.split(".")[0]
                 d['fullname'] = k
                 d['field_value'] = ddf[k][i]
