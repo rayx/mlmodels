@@ -11,21 +11,18 @@ A lit of Github Issues :
 
 ## A 1min example
 ```python
-import mlmodels
 from mlmodels.models import module_load
 
+#### Save to JSON
 model_pars   =  {"model_uri": "model_tf.1_lstm.py",
                   "num_layers": 1, "size": ncol_input, "size_layer": 128, "output_size": ncol_output, "timestep": 4,   }
 data_pars    =  {"data_path": "/folder/myfile.csv"  , "data_type": "pandas" }
 compute_pars =  { "learning_rate": 0.001, }
 out_pars     =  { "path": "ztest_1lstm/", "model_path" : "ztest_1lstm/model/"}
-save_pars    =  { "path" : "ztest_1lstm/model/" }
-load_pars    =  { "path" : "ztest_1lstm/model/" }
-
 
 module        =  module_load( model_uri= model_pars["model_uri"] )                    # Load file definition
-module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars)    # Create Model instance
-module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+module.init(model_pars, data_pars, compute_pars)    # Create Model instance
+module.fit(data_pars, compute_pars, out_pars)
 
 #### Inference
 metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars)  # Inference
