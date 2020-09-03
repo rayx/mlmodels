@@ -752,3 +752,43 @@ def path_local_setup(current_file=None, out_folder="", sublevel=0, data_path="da
 
 
 
+def os_folder_getfiles(folder, ext, dirlevel = -1, mode="fullpath"):
+    """
+
+    :param folder: folder path to be analyzed
+    :type folder: string
+    :param ext: file extension hint example: "*.json"
+    :type ext: string
+    :param dirlevel: number of levels to be analyzed
+    :type dirlevel: int
+    :param mode: either fullpath or filename
+    :type mode: string
+    :return: list of files paths or names (depending on mode param)
+    :rtype: list of str
+    """
+
+    files_list = os.listdir(folder)
+    if dirlevel==0:
+        if (mode=="fullpath"):
+            return [os.path.join(folder, p) for p in files_list if fnmatch.fnmatch(p, ext)]
+        if (mode=="filename"):
+            return [f for f in files_list if fnmatch.fnmatch(f, ext)]
+        else:
+            print("Error: mode parameter is either fullpath or filename")
+    elif (dirlevel==-1 or dirlevel >= 1):
+        all_files = []
+        for entry in files_list:
+            full_path = os.path.join(folder, entry)
+            if os.path.isdir(full_path):
+                if dirlevel==-1:
+                    all_files += os_folder_getfiles(full_path, ext, dirlevel, mode)
+                if dirlevel >= 1:
+                    all_files += os_folder_getfiles(full_path, ext, dirlevel-1, mode)
+            elif fnmatch.fnmatch(entry, ext):
+                if (mode=="fullpath"):
+                    all_files.append(full_path)
+                if (mode=="filename"):
+                    all_files.append(entry)
+    else:
+        print("Error: dirlevel parameter is either -1 or >=1")
+    return all_files

@@ -188,26 +188,7 @@ import json
 import os
 import pandas as pd
 import time
-
-
-def os_folder_getfiles(folder):
-    """
-
-    :param folder: path of folder from which we want to extract all files paths
-    :type folder: str
-    :return: list of all files paths in folder
-    :rtype: list of str
-    """
-    files_list = os.listdir(folder)
-    all_files = list()
-    for entry in files_list:
-        full_path = os.path.join(folder, entry)
-        if os.path.isdir(full_path):
-            all_files = all_files + os_folder_getfiles(full_path)
-        else:
-            all_files.append(full_path)
-
-    return all_files
+from mlmodels.util import os_folder_getfiles
 
 
 def jsons_to_df(json_paths):
@@ -328,7 +309,7 @@ def test_json_conversion():
     :rtype: list of normalized jsons as dictionaries
     """
     json_folder_path = path_norm("dataset\\json")
-    jsons_paths = os_folder_getfiles(json_folder_path)
+    jsons_paths = os_folder_getfiles(json_folder_path,ext = "*.json")
     df = jsons_to_df(jsons_paths)
     df.to_csv('Jsons_Csv.csv')
     print('csv created successfully')
@@ -339,4 +320,3 @@ def test_json_conversion():
 # Testing code
 if __name__ == "__main__":
     New_dicts = test_json_conversion()
-    
