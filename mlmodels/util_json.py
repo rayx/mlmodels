@@ -218,19 +218,23 @@ def jsons_to_df(json_paths):
     all_jsons = []
     for i in range(len(indexed_dicts)):
         all_jsons.append(indexed_dicts[i]['Json'])
-    paths = []
-    filenames = []
-    for i in range(len(indexed_dicts)):
-        paths.append(indexed_dicts[i]['Path'])
-    for i in range(len(indexed_dicts)):
-        filename = indexed_dicts[i]['Path'].split('\\')[-1].split('.json')[0]
-        filenames.append(filename)
 
     ddf = pd.json_normalize(all_jsons)
-    df1 = pd.DataFrame({'file_path': paths, 'json_name': filenames})
-    result = pd.concat([df1, ddf], axis=1)
-    print("Dataframe created successfully")
-    return result
+    result=[]
+    keys=list(ddf.columns)
+    for i in range(len(all_jsons)):
+        for k in keys:
+            if(str(ddf[k][i]) != 'nan'):
+                d=dict()
+                d['file_path'] = indexed_dicts[i]['Path']
+                d['filename'] = indexed_dicts[i]['Path'].split("\\")[-1]
+                d['json_name'] = k.split(".")[0]
+                d['fullname'] = k
+                d['field_value'] = ddf[k][i]
+                result.append(d)
+    del ddf
+    ddf = pd.DataFrame(result)
+    return ddf
 
 
 def dict_update(fields_list, d, value):
@@ -261,28 +265,25 @@ def dict_update(fields_list, d, value):
 def csv_to_json(csv):
     """
 
-    :param csv: csv file (needs to be in current repository), containing jsons to be normalized
+    :param csv: csv file containing jsons to be normalized
     :type csv: str
     :return: list of normalized jsons as dictionaries
     :rtype: list of dicts
     """
-    dicts = []
     ddf = pd.read_csv(csv)
-    fullname = list(ddf.columns)[3:]
-    filename = list(ddf['json_name'])
-    for i in range(len(filename)):
-        dd = dict()
-        fullname = list(ddf.columns)[3:]
-        for j in range(len(fullname)):
-            l = fullname[j].split('.')
+    paths = list(set(ddf['file_path']))
+    fullnames = list(set(ddf['fullname']))
+    dicts=[]
+    for fp in paths:
+        dd=dict()
+        for fn in fullnames:
+            l = fn.split('.')
             dd = dict_update(l, dd, None)
-        for j in range(len(fullname)):
-            value = ddf.iloc[i][fullname[j]]
-            fields = fullname[j].split('.')
-            dd.update(dict_update(fields, dd, value).copy())
+        json_ddf = ddf[ddf['file_path']==fp]
+        filled_values = list(json_ddf['fullname'])
+        for fv in filled_values:
+            dd.update(dict_update(fv.split('.'), dd, list(json_ddf[json_ddf['fullname'] == fv]['field_value'])[0]))
         dicts.append(dd)
-
-    paths = list(ddf['file_path'])
     dataset_dir = os_package_root_path()+'dataset'
     os.chdir(dataset_dir)
     paths = [p[len(dataset_dir)+1:] for p in paths]
@@ -296,8 +297,8 @@ def csv_to_json(csv):
         if not os.path.exists(p):
             os.makedirs(p)
 
-    for i in range(len(filename)):
-        with open(new_paths[i] + '\\' + filename[i] + '.json', 'w') as fp:
+    for i in range(len(paths)):
+        with open(new_paths[i] + '\\' + paths[i].split('\\')[-1], 'w') as fp:
             json.dump(dicts[i], fp, indent=4)
     print("New normalized jsons created, check mlmodels\\mlmodels\\dataset")
     return dicts
@@ -316,6 +317,7 @@ def test_json_conversion():
     time.sleep(1)
     New_dicts = csv_to_json('Jsons_Csv.csv')
     return New_dicts
+
 
 # Testing code
 if __name__ == "__main__":
