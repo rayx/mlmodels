@@ -359,7 +359,7 @@ def dict_update(fields_list, d, value):
     return d
 
 
-def json_csv_to_json(csv):
+def json_csv_to_json(file_csv="", out_path="dataset/"):
     """
 
     :param csv: csv file containing jsons to be normalized
@@ -367,9 +367,9 @@ def json_csv_to_json(csv):
     :return: list of normalized jsons as dictionaries
     :rtype: list of dicts
     """
-    ddf = pd.read_csv(csv)
-    paths = list(set(ddf['file_path']))
-    fullnames = list(set(ddf['fullname']))
+    ddf       = pd.read_csv(file_csv)
+    paths     = list(ddf['file_path'].unique() )
+    fullnames = list(ddf['fullname'].unique() )
     dicts=[]
     for fp in paths:
         dd=dict()
@@ -381,21 +381,24 @@ def json_csv_to_json(csv):
         for fv in filled_values:
             dd.update(dict_update(fv.split('.'), dd, list(json_ddf[json_ddf['fullname'] == fv]['field_value'])[0]))
         dicts.append(dd)
-    dataset_dir = os_package_root_path()+'dataset'
-    os.chdir(dataset_dir)
+        
+    dataset_dir = path_norm(out_path)    
+    #dataset_dir = os_package_root_path()+'dataset'
+    #os.chdir(dataset_dir)
     paths = [p[len(dataset_dir)+1:] for p in paths]
+        
     new_paths = []
     for i in range(len(paths)):
-        lp = paths[i].split('\\')
+        lp = paths[i].split('/')
         lp[0]='normalized_jsons'
-        dire = '\\'.join(''.join(i) for i in lp[:len(lp)-1])
+        dire = '/'.join(''.join(i) for i in lp[:len(lp)-1])
         new_paths.append(dire)
     for p in list(set(new_paths)):
         if not os.path.exists(p):
             os.makedirs(p)
 
     for i in range(len(paths)):
-        with open(new_paths[i] + '\\' + paths[i].split('\\')[-1], 'w') as fp:
+        with open(new_paths[i] + '/' + paths[i].split('/')[-1], 'w') as fp:
             json.dump(dicts[i], fp, indent=4)
     print("New normalized jsons created, check mlmodels\\mlmodels\\dataset")
     return dicts
