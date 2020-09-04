@@ -311,7 +311,7 @@ def jsons_to_df(json_paths):
     df = pd.DataFrame(result)
     
     def getlevel(x, i) :
-        try :    return x.split["."][i]
+        try :    return x.split(".")[i]
         except : return ""
     df['level_1'] = df['fullname'].apply(lambda x :  getlevel(x, 1) )
     df['level_2'] = df['fullname'].apply(lambda x :  getlevel(x, 2) )    
