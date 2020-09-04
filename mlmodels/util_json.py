@@ -155,6 +155,11 @@ def load_callable_from_dict(function_dict, return_other_keys=False):
 
 
 def test_functions_json(arg=None):
+  """
+  
+       args :[]   , kw_args : {}
+  
+  """
   from mlmodels.util import load_function_uri
 
   path = path_norm("dataset/test_json/test_functions.json")
@@ -177,13 +182,83 @@ def test_functions_json(arg=None):
          elif  len(kw) > 0 and len(w) == 0 : log( myfun( ** kw ))
 
          elif  len(kw) == 0 and len(w) > 0 : log( myfun( *w ))
-                     
-            
+                                
      except Exception as e:
         log(e, p )    
 
 
+def json_to_object(ddict):
+  """
+     Execute a function from json to actual arguments
+     {uri:    args :[]   , kw_args : {}   }
+      { "uri" : "mlmodels.util.log", "args" : [ "x1" , "passed"] ,     "kw_args" : { }  }
+     ,{ "uri" : "mlmodels.util:log", "args" : [ "x1" , "passed"] ,      "kw_args" : { }   }     
+     
+     , {"uri": "mlmodels.data:download_gogledrive",
+        "args": [[{"fileid": "1-K72L8aQPsl2qt_uBF-kzbai3TYG6Qg4", "path_target": "ztest/covid19/test.json"},
+                  {"fileid": "1-8Ij1ZXL9YmQRylwRloABdqnxEC1mhP_", "path_target": "ztest/covid19/train.json" }
+          ]], 
+      "kw_args" : {}} 
+     
+  """
+     from mlmodels.util import load_function_uri  
+     p = ddict
+     try :
+         myfun = load_function_uri( p['uri'])
+         w  = p.get('args', []) 
+         kw = p.get('kw_args', {} )         
+         if len(kw) == 0 and len(w) == 0   : return myfun()
+         elif  len(kw) > 0 and len(w) > 0  : return myfun( *w,  ** kw )
+         elif  len(kw) > 0 and len(w) == 0 : return myfun( ** kw )
+         elif  len(kw) == 0 and len(w) > 0 : return myfun( *w )                                
+     except Exception as e:
+        log(e, p )    
 
+        
+def json_norm_val(x):
+    if x == "none" : return None
+    if x == "" : return None
+
+    
+def json_norm(ddict):
+     return { json_norm_val(x)     for k,x in ddict.items() }
+        
+def json_parse(ddict) :
+    """
+      https://github.com/arita37/mlmodels/blob/dev/mlmodels/dataset/test_json/test_functions.json
+      https://github.com/arita37/mlmodels/blob/dev/mlmodels/dataset/json/benchmark_timeseries/gluonts_m5.json
+          "deepar": {
+         "model_pars": {
+             "model_uri"  : "model_gluon.gluonts_model",
+             "model_name" : "deepar",
+             "model_pars" : {
+                 "prediction_length": 12, 
+                 "freq": "D",
+                 "distr_output" :  {"uri" : "gluonts.distribution.neg_binomial:NegativeBinomialOutput"}, 
+
+                 "distr_output" :  "uri::gluonts.distribution.neg_binomial:NegativeBinomialOutput", 
+
+    """
+    js = ddict
+    js2 = copy.deepcopy(js)
+    
+    def parse2(d2) :
+        if "uri" in d2 :
+            return json_to_object(d2)   ### Be careful not to include heavy
+        else :
+            return json_norm(d2)
+        
+    for k,val in js.items() :
+        if isintance(val, dict):
+            js2[k] = parse2(val)
+            
+        elif  "uri::" in x :   ## Shortcut when nor argument
+            js2[k] = json_to_object({ "uri" :  x.split("uri::")[-1] )
+        else :
+            js2[k] = json_norm_val(x)
+    return js2    
+        
+            
 import json
 import os
 import pandas as pd
