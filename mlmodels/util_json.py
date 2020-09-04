@@ -394,10 +394,10 @@ def test_json_conversion():
     json_folder_path = path_norm("dataset\\json")
     jsons_paths = os_folder_getfiles(json_folder_path,ext = "*.json")
     df = jsons_to_df(jsons_paths)
-    df.to_csv('table_csv.csv')
+    df.to_csv('table_json.csv')
     print('csv created successfully')
     time.sleep(1)
-    New_dicts = csv_to_json('table_csv.csv')
+    New_dicts = csv_to_json('table_json.csv')
     return New_dicts
 
 
