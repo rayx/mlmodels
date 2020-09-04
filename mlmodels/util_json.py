@@ -11,12 +11,14 @@ import fnmatch
 # import toml
 from pathlib import Path
 from jsoncomment import JsonComment ; json = JsonComment()
+import fire
 
 import importlib
 from inspect import getmembers
 
 from mlmodels.util import *
 from mlmodels.util import path_norm
+
 
 
 ####################################################################################################
@@ -422,4 +424,11 @@ def test_json_conversion():
 
 # Testing code
 if __name__ == "__main__":
-    New_dicts = test_json_conversion()
+    import fire
+    fire.Fire()
+    
+    ### python mlmodels/util_json.py  test_json_conversion
+    
+    
+    
+    
