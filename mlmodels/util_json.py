@@ -176,11 +176,8 @@ def test_functions_json(arg=None):
          kw = p.get('kw_args', {} )
          
          if len(kw) == 0 and len(w) == 0   : log( myfun())
-
          elif  len(kw) > 0 and len(w) > 0  : log( myfun( *w,  ** kw ))
-
          elif  len(kw) > 0 and len(w) == 0 : log( myfun( ** kw ))
-
          elif  len(kw) == 0 and len(w) > 0 : log( myfun( *w ))
                                 
      except Exception as e:
@@ -217,8 +214,7 @@ def json_to_object(ddict):
         
 def json_norm_val(x):
     if x == "none" : return None
-    if x == "" : return None
-
+    if x == "" :     return None
     
 def json_norm(ddict):
      return { json_norm_val(x)     for k,x in ddict.items() }
@@ -239,12 +235,13 @@ def json_parse(ddict) :
                  "distr_output" :  "uri::gluonts.distribution.neg_binomial:NegativeBinomialOutput", 
 
     """
+    import copy
     js = ddict
     js2 = copy.deepcopy(js)
     
     def parse2(d2) :
         if "uri" in d2 :
-            return json_to_object(d2)   ### Be careful not to include heavy
+            return json_to_object(d2)   ### Be careful not to include heavy compute
         else :
             return json_norm(d2)
         
@@ -252,13 +249,32 @@ def json_parse(ddict) :
         if isintance(val, dict):
             js2[k] = parse2(val)
             
-        elif  "uri::" in x :   ## Shortcut when nor argument
-            js2[k] = json_to_object({ "uri" :  x.split("uri::")[-1] })
+        elif  "uri::" in val :   ## Shortcut when nor argument
+            js2[k] = json_to_object({ "uri" :  val.split("uri::")[-1] })
         else :
             js2[k] = json_norm_val(x)
     return js2    
+
+
+def json_codesource_to_json(fpath) :
+    """
+        read a python file and create json
+        Ex:
+        def MyClass():
+           def __init__(fname, zout=""):
+           def method1(x=1, y=2)
+       --->
+               {"uri": "MyClass",   "arg" : ["fname"] , "kwargs": {"out" : "ztmp"} }       
+               
+               {"uri": "MyClass.method1",   "arg" : [] , "kwargs": {"x" : 1, "y" : 2, } }       
+           
+
+    """
+    ff = open(fpath, mode="r")
         
-            
+        
+
+###################################################################################################            
 import json
 import os
 import pandas as pd
@@ -321,7 +337,6 @@ def jsons_to_df(json_paths):
 
 def dict_update(fields_list, d, value):
     """
-
     :param fields_list: list of hierarchically sorted dictionary fields leading to value to be modified
     :type fields_list: list of str
     :param d: dictionary to be modified
@@ -344,7 +359,7 @@ def dict_update(fields_list, d, value):
     return d
 
 
-def csv_to_json(csv):
+def json_csv_to_json(csv):
     """
 
     :param csv: csv file containing jsons to be normalized
@@ -392,13 +407,14 @@ def test_json_conversion():
     :rtype: list of normalized jsons as dictionaries
     """
     json_folder_path = path_norm("dataset\\json")
-    jsons_paths = os_folder_getfiles(json_folder_path,ext = "*.json")
-    df = jsons_to_df(jsons_paths)
+    jsons_paths      = os_folder_getfiles(json_folder_path,ext = "*.json")
+    df               = jsons_to_df(jsons_paths)
     df.to_csv('table_json.csv')
     print('csv created successfully')
     time.sleep(1)
-    New_dicts = csv_to_json('table_json.csv')
-    return New_dicts
+    dicts2 = json_csv_to_json('table_json.csv')
+    print(dicts2)
+    return dicts2
 
 
 # Testing code
