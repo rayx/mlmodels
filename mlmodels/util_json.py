@@ -201,18 +201,18 @@ def json_to_object(ddict):
       "kw_args" : {}} 
      
   """
-     from mlmodels.util import load_function_uri  
-     p = ddict
-     try :
-         myfun = load_function_uri( p['uri'])
-         w  = p.get('args', []) 
-         kw = p.get('kw_args', {} )         
-         if len(kw) == 0 and len(w) == 0   : return myfun()
-         elif  len(kw) > 0 and len(w) > 0  : return myfun( *w,  ** kw )
-         elif  len(kw) > 0 and len(w) == 0 : return myfun( ** kw )
-         elif  len(kw) == 0 and len(w) > 0 : return myfun( *w )                                
-     except Exception as e:
-        log(e, p )    
+  from mlmodels.util import load_function_uri
+  p = ddict
+  try :
+      myfun = load_function_uri( p['uri'])
+      w  = p.get('args', [])
+      kw = p.get('kw_args', {} )
+      if len(kw) == 0 and len(w) == 0   : return myfun()
+      elif  len(kw) > 0 and len(w) > 0  : return myfun( *w,  ** kw )
+      elif  len(kw) > 0 and len(w) == 0 : return myfun( ** kw )
+      elif  len(kw) == 0 and len(w) > 0 : return myfun( *w )
+  except Exception as e:
+      log(e, p )
 
         
 def json_norm_val(x):
@@ -253,7 +253,7 @@ def json_parse(ddict) :
             js2[k] = parse2(val)
             
         elif  "uri::" in x :   ## Shortcut when nor argument
-            js2[k] = json_to_object({ "uri" :  x.split("uri::")[-1] )
+            js2[k] = json_to_object({ "uri" :  x.split("uri::")[-1] })
         else :
             js2[k] = json_norm_val(x)
     return js2    
@@ -394,10 +394,10 @@ def test_json_conversion():
     json_folder_path = path_norm("dataset\\json")
     jsons_paths = os_folder_getfiles(json_folder_path,ext = "*.json")
     df = jsons_to_df(jsons_paths)
-    df.to_csv('Jsons_Csv.csv')
+    df.to_csv('table_csv.csv')
     print('csv created successfully')
     time.sleep(1)
-    New_dicts = csv_to_json('Jsons_Csv.csv')
+    New_dicts = csv_to_json('table_csv.csv')
     return New_dicts
 
 
