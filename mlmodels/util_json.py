@@ -233,8 +233,15 @@ def jsons_to_df(json_paths):
                 d['field_value'] = ddf[k][i]
                 result.append(d)
     del ddf
-    ddf = pd.DataFrame(result)
-    return ddf
+    df = pd.DataFrame(result)
+    
+    def getlevel(x, i) :
+        try :    return x.split["."][i]
+        except : return ""
+    df['level_1'] = df['fullname'].apply(lambda x :  getlevel(x, 1) )
+    df['level_2'] = df['fullname'].apply(lambda x :  getlevel(x, 2) )    
+    df['level_3'] = df['fullname'].apply(lambda x :  getlevel(x, 3) )        
+    return df
 
 
 def dict_update(fields_list, d, value):
