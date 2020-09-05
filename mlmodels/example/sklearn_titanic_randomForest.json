@@ -32,13 +32,15 @@
                 "dataset":   "csv titanic",
                 "data_type": "csv",
                 // "batch_size": 10,
-                "task_type": "train"    // "pred"  "eval"
+
+                 // "train" ,  pred",   "eval"
+                "task_type": "train"   
             },
             "preprocessors": [
             {
-                "uri"  : "mlmodels.preprocess.pandas_file",
+                "uri"  : "mlmodels.preprocess.generic.pandas_reader",
                 "args"  : {
-                           "task_type": "train", 
+                           "task": "train", 
                            "path" : "dataset/tabular/titanic_train_preprocessed.csv",
                            "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
                            "coly": "Survived",
