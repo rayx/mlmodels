@@ -15,18 +15,11 @@ Check parameters template in models_config.json
 
 
 """
-import os
-
+import os, sys, copy
 import pandas as pd
 
 
-####################################################################################################
-######## Logs, root path
-from mlmodels.util import log, path_norm, get_model_uri
-
-
 import sklearn
-from sklearn.metrics import accuracy_score
 
 from sklearn.linear_model import *
 from sklearn.svm import *
@@ -35,7 +28,9 @@ from sklearn.cluster import *
 from sklearn.tree import *
 
 
-
+####################################################################################################
+######## Logs, root path
+from mlmodels.util import log, path_norm, get_model_uri
 
 
 
@@ -44,89 +39,136 @@ VERBOSE = False
 MODEL_URI = get_model_uri(__file__)
 
 ####################################################################################################
+global model, session
+
+def init(*kw, **kwargs) :
+    global model, session
+    model   = Model(*kw, **kwargs)
+    session = None
+
+
 class Model(object):
     def __init__(self, model_pars=None, data_pars=None, compute_pars=None):
-        self.model_pars, self.compute_pars = model_pars, compute_pars
+        self.model_pars, self.compute_pars = copy.deepcopy(model_pars), compute_pars
 
         if model_pars is None :
             self.model = None
         else :
             model_class = globals()[model_pars["model_name"]]
-            del model_pars["model_name"]
-            self.model = model_class(**model_pars)
+            # del model_pars["model_name"]
+
+            #### Specific to SKLEARN model
+            mpars = model_pars.get('model_pars', {})
+            self.model = model_class(**mpars)
 
 
 
-def fit(model, data_pars=None, compute_pars=None, out_pars=None, **kw):
+def fit(data_pars=None, compute_pars=None, out_pars=None, **kw):
     """
     """
-    sess = None  # Session type for compute
-    Xtrain, ytrain, Xtest,  ytest = get_dataset(data_pars)
-    model.model.fit(Xtrain, ytrain)
-    return model, sess
+    Xtrain, ytrain, Xtest,  ytest = get_dataset(data_pars, task_type="train")
+    cpars = compute_pars.get("compute_pars", {})
+    model.model = model.model.fit(Xtrain, ytrain, **cpars)
 
 
-
-def fit_metrics(model, data_pars=None, compute_pars=None, out_pars=None, **kw):
-    from sklearn.metrics import roc_auc_score
+def fit_metrics(data_pars=None, compute_pars=None, out_pars=None, verbose=False, **kw):
+    from sklearn.metrics import roc_auc_score, accuracy_score
     """
        Return metrics of the model when fitted.
     """
-    data_pars['train'] = True
-    _, _, Xval, yval = get_dataset(data_pars)
+    Xval, yval = get_dataset(data_pars, task_type="eval")
+
     #### Do prediction
-    ypred = model.model.predict(Xval)
+    ypred = model.model.predict(Xval)    
+    if verbose : print(data_pars)
     
-    print(data_pars)
-    
-    score = roc_auc_score(yval, ypred)
-
-
-    ddict = {"roc_auc_score":score}
-
+    score = accuracy_score(yval, ypred)
+    ddict = {"accuracy":score}
     return ddict
 
 
-def predict(model, sess=None, data_pars=None, compute_pars=None, out_pars=None, **kw):
-    ##### Get Data ###############################################
-    data_pars['train'] = False
-    _, _, Xpred, ypred = get_dataset(data_pars)
-    #print(Xpred)
 
-    #### Do prediction
-    ypred = model.model.predict(Xpred)
+def predict(data_pars=None, compute_pars=None, out_pars=None, **kw):
+    Xpred = get_dataset(data_pars, task_type="pred")
+    ppars = compute_pars.get("pred_pars", {})
+    ypred = model.model.predict(Xpred, **ppars)
 
-    ### Save Results
 
     ### Return val
     if compute_pars.get("return_pred_not") is not None:
         return ypred
 
 
-def reset_model():
-    pass
+def reset():
+    global model, session
+    model, session = None, None
 
 
-def save(model=None, session=None, save_pars={}):
-    from mlmodels.util import save_pkl
-    print(save_pars)
-    save_pkl(model.model, session, save_pars)
+def save(path=None, info={}):
+    global model, session
+    import cloudpickle as pickle
+    os.makedirs(path, exist_ok=True)
+    
+    filename = "model.pkl"
+    pickle.dump(model, open( f"{path}/{filename}" , mode='wb')) #, protocol=pickle.HIGHEST_PROTOCOL )
+    
+    filename = "info.pkl"
+    pickle.dump(info, open( f"{path}/{filename}" , mode='wb')) #,protocol=pickle.HIGHEST_PROTOCOL )   
+    
+    
 
-
-def load(load_pars={}):
-    from mlmodels.util import load_pkl
-    print(load_pars)
-    model0 = load_pkl(load_pars)
-
-    model = Model()
-    model.model = model0
+def load(path=""):
+    global model, session
+    import cloudpickle as pickle
+    model0 = pickle.load(open( f"{path}/model.pkl", mode='rb') )
+ 
+    model = Model() # Empty model    
+    model.model        = model0.model
+    model.model_pars   = model0.model_pars
+    model.compute_pars = model0.compute_pars    
     session = None
     return model, session
 
 
+def load_info(path=""):
+    import cloudpickle as pickle, glob
+    dd = {}
+    for fp in glob.glob(f"{path}/*.pkl") :   
+      if not "model.pkl" in fp :  
+        obj = pickle.load(open( fp, mode='rb') )
+        key = fp.split("/")[-1]
+        dd[key] = obj
+    return dd
+
+
 
 ####################################################################################################
-def get_dataset(data_pars=None, **kw):
+def get_dataset(data_pars=None, task_type="train", **kw):
+    """
+      "ram"  : 
+      "file" :
+    """
+    # log(data_pars)
+    data_type = data_pars.get('type', 'ram') 
+    if data_type == "ram"  :
+        if task_type == "predict"  :
+            d = data_pars[task_type]
+            return d["X"]
+        
+        if task_type == "eval"  :
+            d = data_pars[task_type]
+            return d["X"], d["y"]
+        
+        if task_type == "train"  :
+            d = data_pars[task_type]
+            return d["Xtrain"], d["ytrain"],  d["Xtest"], d["ytest"]
+
+    elif data_type == "file"  :   
+        raise Exception(f' {data_type} data_type Not implemented ')
+
+
+
+def get_dataset2(data_pars=None, **kw):
     """
       JSON data_pars to get dataset
       "data_pars":    { "data_path": "dataset/GOOG-year.csv", "data_type": "pandas",
@@ -162,12 +204,14 @@ def get_dataset(data_pars=None, **kw):
 
 
 
+
+
 def get_params(param_pars={}, **kw):
     from jsoncomment import JsonComment ; json = JsonComment()
-    pp = param_pars
-    choice = pp['choice']
+    pp          = param_pars
+    choice      = pp['choice']
     config_mode = pp['config_mode']
-    data_path = pp['data_path']
+    data_path   = pp['data_path']
 
     if choice == "json":
         cf = json.load(open(data_path, mode='r'))
@@ -180,11 +224,10 @@ def get_params(param_pars={}, **kw):
         out_path   = path_norm( "ztest/model_sklearn/model_sklearn/" )
         model_path = os.path.join(out_path , "model.pkl")
 
-
-        data_pars = {'mode': 'test', 'path': data_path, 'data_type' : 'pandas' }
-        model_pars = {"model_name":  "RandomForestClassifier", "max_depth" : 4 , "random_state":0}
+        data_pars    = {'mode': 'test', 'path': data_path, 'data_type' : 'pandas' }
+        model_pars   = {"model_name":  "RandomForestClassifier", "max_depth" : 4 , "random_state":0}
         compute_pars = {}
-        out_pars = {'path' : out_path, 'model_path' : model_path}
+        out_pars     = {'path' : out_path, 'model_path' : model_path}
 
         return model_pars, data_pars, compute_pars, out_pars
 
@@ -205,24 +248,24 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
     xtuple = get_dataset(data_pars)
 
     log("#### Model init, fit   #############################################")
-    session = None
-    model = Model(model_pars, data_pars, compute_pars)
-    model, session = fit(model, data_pars, compute_pars, out_pars)
+    init(model_pars, data_pars, compute_pars)
+    fit(data_pars, compute_pars, out_pars)
 
     log("#### save the trained model  #######################################")
+    save_pars = {"path" : out_pars['model_path'] }
+    save(save_pars)
 
     log("#### Predict   #####################################################")
-    ypred = predict(model, session, data_pars, compute_pars, out_pars)
+    ypred = predict(data_pars, compute_pars, out_pars)
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, data_pars, compute_pars, out_pars)
+    metrics_val = fit_metrics(data_pars, compute_pars, out_pars)
     print(metrics_val)
 
     log("#### Plot   ########################################################")
 
     log("#### Save/Load   ###################################################")
-    save_pars = {"path" : out_pars['model_path'] }
-    save(model, session, save_pars)
+
     model2, session = load( save_pars)
     print(model2.model)
     # ypred = predict(model2, data_pars, compute_pars, out_pars)
