@@ -2,6 +2,7 @@
     "test": {
 
         "model_pars": {
+            "model_uri" : "model_sklearn.sklearn.py",
             "model_name":  "RandomForestClassifier",
             "model_pars": {
                 "warm_start": false,
