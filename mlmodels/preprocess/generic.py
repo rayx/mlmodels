@@ -61,8 +61,15 @@ def pandas_reader(task, path, colX, coly, path_eval, train_split_ratio=0.5):
    if task == "train":
       dftrain, dftest = train_test_split(df,)
       Xtest, ytest = dftest[colsX], dftest[colsy]
+      return Xtrain, ytrain,Xtest, ytest,
+      
+   if task == "eval":
+      Xtest, ytest = d[colsX], df[colsy]
+      return Xtest, ytest
    
-   if task == "train":
+   if task == "eval":
+      X= d[colsX]
+      return X
    
    
    
