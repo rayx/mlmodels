@@ -1,53 +1,80 @@
 {
-	"test": {
+    "test": {
 
-		"model_pars": {
-		    "model_name":  "RandomForestClassifier",
-		    "warm_start": false,
-            "verbose": 1,
-            "random_state": 0,
-            "oob_score": false,
-            "n_jobs": null,
-            "n_estimators": 10,
-            "min_weight_fraction_leaf": 0.0,
-            "min_samples_split": 2,
-            "min_samples_leaf": 1,
-            "min_impurity_split": null,
-            "min_impurity_decrease": 0.0,
-            "max_leaf_nodes": null,
-            "max_features": "auto",
-            "max_depth": 4,
-            "criterion": "gini",
-            "class_weight": null,
-            "bootstrap": true
-		    
-	    },
-
-		"data_pars": {
-            "mode": "train", 
-            "path": "dataset/tabular/titanic_train_preprocessed.csv", 
-            "data_type" : "pandas", 
-            "train":"True" ,
-            "colX":["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
-            "coly": "Survived"
+        "model_pars": {
+            "model_name":  "RandomForestClassifier",
+            "model_pars": {
+                "warm_start": false,
+                "verbose": 1,
+                "random_state": 0,
+                "oob_score": false,
+                "n_jobs": null,
+                "n_estimators": 10,
+                "min_weight_fraction_leaf": 0.0,
+                "min_samples_split": 2,
+                "min_samples_leaf": 1,
+                "min_impurity_split": null,
+                "min_impurity_decrease": 0.0,
+                "max_leaf_nodes": null,
+                "max_features": "auto",
+                "max_depth": 4,
+                "criterion": "gini",
+                "class_weight": null,
+                "bootstrap": true
+            }           
         },
-		
-        "compute_pars" :  { "return_pred_not": "False"},
+
+
+        "data_pars": {
+            "data_info": {
+                "data_path": "dataset/tabular/",
+                "dataset":   "csv titanic",
+                "data_type": "csv",
+                // "batch_size": 10,
+                "task_type": "train"    // "pred"  "eval"
+            },
+            "preprocessors": [
+            {
+                "uri"  : "mlmodels.preprocess.pandas_file",
+                "args"  : {
+                           "task_type": "train", 
+                           "path" : "dataset/tabular/titanic_train_preprocessed.csv",
+                           "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
+                           "coly": "Survived",
+                           "path_eval" : "",
+                           "train_split_ratio" : 0.8,
+                          },
+                "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]          
+            }]    
+            },
+
+
+
+        },
+        
+
+        "compute_pars" :  { 
+            "return_pred_not": false,
+            "compute_pars": {
+                "sample_weight" : null,
+            },
+
+            "prediction_pars" :{
+            }   
+
+
+
+
+        },
         
         "out_pars":  { "path": "../ztest/"}
 
 
-	},
+    },
 
 
-	"prod": {
-
-		"model_pars": {},
-
-		"data_pars": {}
-
-
-	}
+    "prod": {
+    }
 
 
 
