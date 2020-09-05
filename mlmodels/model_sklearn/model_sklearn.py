@@ -11,6 +11,22 @@ Check parameters template in models_config.json
         compute_pars = {}
         out_pars = {'path' : out_path}
 
+p = json.load(open(path_norm("example/sklearn_titanic_randomForest.json")))['test']
+model_pars = p['model_pars']
+compute_pars = p['model_pars']
+data_pars = p['model_pars']
+out_pars = p['model_pars']
+
+#### Load Parameters and Train
+from mlmodels.models import module_load
+
+module        =  module_load( model_uri= model_uri )                          
+module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_pars)          
+module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+
+#### Inference
+metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars) # get stats
+ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict pipeline
 
 
 
@@ -143,7 +159,7 @@ def load_info(path=""):
 
 
 ####################################################################################################
-def get_dataset(data_pars=None, task_type="train", **kw):
+def preprocessor_ram(data_pars=None, task_type="train", **kw):
     """
       "ram"  : 
       "file" :
@@ -165,6 +181,57 @@ def get_dataset(data_pars=None, task_type="train", **kw):
 
     elif data_type == "file"  :   
         raise Exception(f' {data_type} data_type Not implemented ')
+
+
+def get_dataset(data_pars=None, **kw):
+    """
+            "data_pars": {
+            "data_info": {
+                "data_path": "dataset/tabular/",
+                "dataset":   "csv titanic",
+                "data_type": "csv",
+                // "batch_size": 10,
+                "task_type": "train"    // "pred"  "eval"
+            },
+            "preprocessors": [
+            {
+                "uri"  : "mlmodels.preprocess.generic.pandas_reader",
+                "args"  : {
+                           "task_type": "train", 
+                           "path" : "dataset/tabular/titanic_train_preprocessed.csv",
+                           "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
+                           "coly": "Survived",
+                           "path_eval" : "",
+                           "train_split_ratio" : 0.8,
+                          },
+                "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]          
+            }]    
+            },
+    """ 
+    from mlmodels.dataloader import DataLoader
+
+    if "dataset" not in data_pars['data_info'] :
+      raise Exception("need dataset in data_info")        
+
+    task   = data_pars['task_type']
+    loader = DataLoader(data_pars)
+    loader.compute()
+
+    if task == 'train' :
+       Xtrain, ytrain, Xtest, ytest  = loader.get_data()       
+       return Xtrain, ytrain, Xtest, ytest
+
+    if task == 'eval' :
+       Xtest, ytest  = loader.get_data()       
+       return Xtest, ytest
+
+    if task == 'pred' :
+       X  = loader.get_data()       
+       return X
+
+    else :
+       raise Exception(f"Unknown task {task}") 
+
 
 
 
