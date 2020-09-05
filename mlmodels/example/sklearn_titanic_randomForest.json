@@ -1,6 +1,32 @@
 {
     "test": {
 
+        "hypermodel_pars" :  {
+            ### Compute follows mlmodel compute scheme
+
+            "model_pars": {  "model_uri"   : "optuna", 
+                             "model_pars"  :  { "study_name" :  "mystudy",
+                                                "storage"    :  "my.sqlite" ,
+                                                "pruner"     :  "uri::optuna.pruners.MedianPruner" }
+                          },                
+
+            "compute_pars" :  { "ntrials":1,  "metric_target":"roc_auc_score",
+                                "compute_pars" : {}
+                              },
+
+            "data_pars" : { 
+                 ### Hyper variables to be optimized , ie variables in  model_pars or in compute_pars
+                 "vars" : {
+                    "num_leaves":   {"type": "int", "init": 100,  "range" : [5, 200] },
+                    "max_depth":    {"type": "int", "init": 4,    "range" : [0, 6] }
+                  }  
+             },
+
+             "out_pars" :  { "path" : "zdata/hyper_params/test01/" }
+
+        },
+
+
         "model_pars": {
             "model_uri" : "model_sklearn.sklearn.py",
             "model_name":  "RandomForestClassifier",
@@ -82,3 +108,16 @@
 
 
 }
+
+
+/*
+
+def optim_optuna(model_uri="model_tf.1_lstm.py",
+                 hypermodel_pars = {"engine_pars": {}},
+                 model_pars      = {},
+                 data_pars       = {},
+                 compute_pars    = {},  # only Model pars
+                 out_pars        = {}):
+
+
+*/
