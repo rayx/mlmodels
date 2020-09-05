@@ -42,7 +42,30 @@ def torch_datasets_wrapper(sets, args_list = None, **args):
 
 
 
-
+def pandas_reader(task, path, colX, coly, path_eval, train_split_ratio=0.5):
+   """
+                    "uri"  : "mlmodels.preprocess.generic.pandas_reader",
+                "args"  : {
+                           "task": "train", 
+                           "path" : "dataset/tabular/titanic_train_preprocessed.csv",
+                           "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
+                           "coly": "Survived",
+                           "path_eval" : "",
+                           "train_split_ratio" : 0.8,
+                          },
+                "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]  
+   
+   """
+   df = pd.read_csv(path)
+   
+   if task == "train":
+      dftrain, dftest = train_test_split(df,)
+      Xtest, ytest = dftest[colsX], dftest[colsy]
+   
+   if task == "train":
+   
+   
+   
 from mlmodels.util import load_function_uri as load_function
 """
 def load_function(uri_name="path_norm"):
