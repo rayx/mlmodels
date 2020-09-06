@@ -34,6 +34,9 @@ VERBOSE = True
 ###############################################################################################################
 ###############################################################################################################
 def torch_datasets_wrapper(sets, args_list = None, **args):
+    """
+
+    """
     if not isinstance(sets,list) and not isinstance(sets,tuple):
         sets = [sets]
     import torch
@@ -43,16 +46,16 @@ def torch_datasets_wrapper(sets, args_list = None, **args):
 
 
 
-def pandas_reader(task, path, colX, coly, path_eval, train_split_ratio=0.5):
+def pandas_reader(task, path, colX, coly, path_eval=None, train_size=0.8):
    """ Simple loader for tabular dataset
                     "uri"  : "mlmodels.preprocess.generic.pandas_reader",
                 "args"  : {
-                           "task": "train", 
+                           "task" : "train", 
                            "path" : "dataset/tabular/titanic_train_preprocessed.csv",
-                           "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
-                           "coly": "Survived",
+                           "colX" : ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
+                           "coly" : "Survived",
                            "path_eval" : "",
-                           "train_split_ratio" : 0.8,
+                           "train_size" : 0.8,
                           },
                 "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]  
    
@@ -62,21 +65,22 @@ def pandas_reader(task, path, colX, coly, path_eval, train_split_ratio=0.5):
    if task == "train":
       from sklearn.model_selection import train_test_split
       if path_eval is None :
-         dftrain, dftest = train_test_split(df, train_split_ratio)
+         dftrain, dftest = train_test_split(df, train_size = train_size)
       else :
          dftrain = df
          dftest  = pd.read_csv(path_eval)
          del df; gc.collect()
-         
-      Xtest, ytest = dftest[colsX], dftest[colsy]
+
+      Xtrain, ytrain = dftrain[colX], dftrain[coly]         
+      Xtest, ytest   = dftest[colX], dftest[coly]
       return Xtrain, ytrain,Xtest, ytest,
       
    if task == "eval":
-      Xtest, ytest = df[colsX], df[colsy]
+      Xtest, ytest = df[colX], df[coly]
       return Xtest, ytest
    
    if task == "eval":
-      X= df[colsX]
+      X= df[colX]
       return X
    else :
       raise Exception(" {task} is unknown task")

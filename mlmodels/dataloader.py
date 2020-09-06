@@ -68,7 +68,7 @@ from pprint import pprint as print2
 
 from sklearn.model_selection import train_test_split
 import cloudpickle as pickle
-
+import fire
 
 #########################################################################
 #### mlmodels-internal imports
@@ -191,9 +191,14 @@ def get_dataset_type(x) :
 
 #################################################################################################
 class DataLoader:
+    """
+      Class which read the json and execute to load the data and send to the model
 
+
+    """
     default_loaders = {
         ".csv": {"uri": "pandas::read_csv", "pass_data_pars":False},
+        ".parquet": {"uri": "pandas::read_parquet", "pass_data_pars":False},
         ".npy": {"uri": "numpy::load", "pass_data_pars":False},
         ".npz": {"uri": "np:load", "arg": {"allow_pickle": True}, "pass_data_pars":False},
         ".pkl": {"uri": "dataloader::pickle_load", "pass_data_pars":False},
@@ -213,7 +218,7 @@ class DataLoader:
 
 
     def check(self):
-        # Validate data_info
+        # Validate data_info without execution
         self._validate_data_info(self.data_info)
 
         input_type_prev = "file"   ## HARD CODE , Bad
@@ -232,10 +237,9 @@ class DataLoader:
             input_type_prev = preprocessor.get('output_type', "")
        
 
-    def compute(self, docheck=0):
+    def compute(self, docheck=True, verbose=True):
         if docheck :
             self.check()
-
 
         input_tmp = None
         for preprocessor in self.preprocessors:
@@ -248,15 +252,14 @@ class DataLoader:
             preprocessor_func = load_function(uri)
             log("\n###### load_callable_from_uri LOADED",  preprocessor_func)
             if inspect.isclass(preprocessor_func):
-                ### Should match PytorchDataloader, KerasDataloader, PandasDataset, ....
+                ### NAME Should match PytorchDataloader, KerasDataloader, PandasDataset, ....
                 ## A class : muti-steps compute
                 cls_name = preprocessor_func.__name__
-                print("cls_name :", cls_name, flush=True)
+                if verbose : print("cls_name :", cls_name, flush=True)
 
 
                 if cls_name in DATASET_TYPES:  # dataset object
                     obj_preprocessor = preprocessor_func(**args, data_info=self.data_info)
-
 
                     if cls_name == "pandasDataset" or cls_name == "NumpyDataset": # get dataframe/numpyarray instead of pytorch dataset
                         out_tmp = obj_preprocessor.get_data()
@@ -274,15 +277,12 @@ class DataLoader:
                     log("\n", "Object Compute")
                     obj_preprocessor.compute(input_tmp)
 
-
                     log("\n", "Object get_data")                    
                     out_tmp = obj_preprocessor.get_data()
 
 
-
             else:
                 ### Only a function, not a Class : Directly COMPUTED.
-
                 # log("input_tmp: ",input_tmp['X'].shape,input_tmp['y'].shape)
                 # log("input_tmp: ",input_tmp.keys())
                 pos_params = inspect.getfullargspec(preprocessor_func)[0]
@@ -300,8 +300,6 @@ class DataLoader:
                 else:
                     out_tmp = preprocessor_func(input_tmp, **args)
 
-
-
             ## Be careful of Very Large Dataset, it will not work not to save ALL 
             ## Save internal States
             if preprocessor.get("internal_states", None):
@@ -312,9 +310,13 @@ class DataLoader:
             input_tmp = out_tmp
         self.final_output = out_tmp
 
-    def get_data(self):
-        return self.final_output, self.internal_states
 
+    def get_data(self, return_internal_states=False):
+        ### Return the data wrapper
+        if return_internal_states:
+            return self.final_output, self.internal_states
+         else :
+            return self.final_output 
 
 
 ##########################################################################################################
@@ -476,14 +478,10 @@ def cli_load_arguments(config_file=None):
     add("--config_file" , default=None                     , help="Params File")
     add("--config_mode" , default="test"                   , help="test/ prod /uat")
     add("--log_file"    , help="File to save the logging")
-
     add("--do"          , default="test_single"                   , help="what to do test or search")
 
     ###### model_pars
     add("--path", default='dataset/json/refactor/torchhub_cnn_dataloader.json' , help="name of the model for --do test")
-
-
-
     add("--file", default='dataset/json/refactor/', help="name of the model for --do test")
 
 
@@ -513,8 +511,14 @@ def main():
 
 
 if __name__ == "__main__":
+   """
+      python mlmodels/dataloader.py  test_dataloader  --path  'dataset/json/refactor/''
+
+
+   """ 
    VERBOSE =1  
-   main()
+   # main()
+   fire.Fire()
     
 #    test_run_model()
 

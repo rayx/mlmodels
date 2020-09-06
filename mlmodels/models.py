@@ -59,6 +59,51 @@ def module_load(model_uri="", verbose=0, env_build=0):
     """
       Load the file which contains the model description
       model_uri:  model_tf.1_lstm.py  or ABSOLUTE PATH
+      3 casess :
+         a file
+         a module
+         a folder 
+
+    """
+    if ".py" in model_uri : 
+        ### Add Folder to Path and Load absoluate path model
+        path_parent = str(Path(model_uri).parent.absolute())
+        sys.path.append(path_parent)
+        # print(path_parent, sys.path)
+
+        #### import Absilute Path model_tf.1_lstm
+        model_name = Path(model_uri).stem  # remove .py
+        model_name = str(Path(model_uri).parts[-2]) + "." + str(model_name)
+        # print(model_name)
+        module = import_module(model_name)
+        return module
+
+    if "/" in model_uri : 
+        ### Add Folder to Path and Load absoluate path model
+        path_parent = str(Path(model_uri).absolute())
+        sys.path.append(path_parent)
+
+        #### import Absilute Path model_tf.1_lstm
+        model_name = "model"  # remove .py
+        model_name = str(Path(model_uri).parts[-2]) + "." + str(model_name)
+        module = import_module(model_name)
+        return moddule
+
+     else :
+        #### Import from package 
+        model_name = model_uri.replace(".py", "")
+
+        if "model_" in model_name :
+           try : 
+              module     = import_module(f"mlmodels.{model_name}.model")
+           except :
+              module     = import_module(f"mlmodels.{model_name}")
+              
+           return module
+        else :
+           module     = import_module(f"{model_name}")
+           return module
+
     """
     # print(os_file_current_path())
     model_uri = model_uri.replace("/", ".")
@@ -90,7 +135,7 @@ def module_load(model_uri="", verbose=0, env_build=0):
 
     if verbose: print(module)
     return module
-
+    """
 
 def module_load_full(model_uri="", model_pars=None, data_pars=None, compute_pars=None, choice=None, **kwarg):
     """
