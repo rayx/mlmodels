@@ -254,7 +254,7 @@ def json_parse(ddict) :
         elif  "uri::" in val :   ## Shortcut when nor argument
             js2[k] = json_to_object({ "uri" :  val.split("uri::")[-1] })
         else :
-            js2[k] = json_norm_val(x)
+            js2[k] = json_norm_val(val)
     return js2    
 
 
