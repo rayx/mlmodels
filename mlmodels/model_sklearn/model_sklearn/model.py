@@ -98,12 +98,14 @@ def evaluate(data_pars=None, compute_pars=None, out_pars=None, verbose=False, **
     global model, session
     from sklearn.metrics import roc_auc_score, accuracy_score
     from mlmodels.metrics import metrics_eval
-    data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
-    task_pars  = compute_pars.get("evaluate_pars", {})
-    Xval, yval = get_dataset(data_pars, task_type="eval")
-    ypred      = model.model.predict(Xval, **task_pars)    
     if verbose : log(data_pars)
+
+    compute_pars   = json_parse(compute_pars)
+    task_pars  = compute_pars.get("evaluate_pars", {})
+    Xval, yval = get_dataset(data_pars, task_type="evaluate")
+    ypred      = model.model.predict(Xval, **task_pars)    
+
     
     metrics  = data_pars.get('metrics', ['accuracy'])
     df_score = metrics_eval(metric_list=metrics, ytrue=yval, ypred=ypred, ypred_proba=None, return_dict=0)
@@ -113,9 +115,9 @@ def evaluate(data_pars=None, compute_pars=None, out_pars=None, verbose=False, **
 
 def predict(data_pars=None, compute_pars=None, out_pars=None, verbose=False,  **kw):
     global model, session
-    data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
+    compute_pars   = json_parse(compute_pars)
 
-    Xpred     = get_dataset(data_pars, task_type="pred")
+    Xpred     = get_dataset(data_pars, task_type="predict")
     task_pars = compute_pars.get("predict_pars", {})
     ypred     = model.model.predict(Xpred, **task_pars)
 
@@ -204,11 +206,11 @@ def get_dataset(data_pars=None, **kw):
        Xtrain, ytrain, Xtest, ytest  = loader.get_data()       
        return Xtrain, ytrain, Xtest, ytest
 
-    if task == 'eval' :
+    if task == 'evaluate' :
        Xtest, ytest  = loader.get_data()       
        return Xtest, ytest
 
-    if task == 'pred' :
+    if task == 'predict' :
        X  = loader.get_data()       
        return X
 
@@ -226,8 +228,10 @@ def get_params(param_pars={}, **kw):
     if choice == "json":
         cf = json.load(open(data_path, mode='r'))
         cf = cf[config_mode]
+        cf = path_norm_dict(cf)
         return cf['model_pars'], cf['data_pars'], cf['compute_pars'], cf['out_pars']
 
+    """
     if choice == "test01":
         log("#### Path params   ##########################################")
         data_path  = path_norm( "dataset/tabular/titanic_train_preprocessed.csv"  )
@@ -240,7 +244,7 @@ def get_params(param_pars={}, **kw):
         out_pars     = {'path' : out_path, 'model_path' : model_path}
 
         return model_pars, data_pars, compute_pars, out_pars
-
+    """ 
     else:
         raise Exception(f"Not support choice {choice} yet")
 
