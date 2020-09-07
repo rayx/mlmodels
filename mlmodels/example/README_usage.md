@@ -611,7 +611,7 @@ ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict 
 
 
 #### Check metrics
-metrics_val = module.fit_metrics(model, data_pars, compute_pars, out_pars)
+metrics_val = module.evaluate(model, data_pars, compute_pars, out_pars)
 metrics_val 
 
 ```

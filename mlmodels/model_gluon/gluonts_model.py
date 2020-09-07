@@ -460,7 +460,7 @@ def metrics(ypred, data_pars, compute_pars=None, out_pars=None, **kw):
 
 
 
-def fit_metrics(ypred, data_pars, compute_pars=None, out_pars=None, **kw):
+def evaluate(ypred, data_pars, compute_pars=None, out_pars=None, **kw):
         ### load test dataset
       
         data_pars['train']        = 0

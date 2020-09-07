@@ -67,7 +67,7 @@ Requires at least one evaluation data. If True, the eval metric on the eval set 
 
 
 
-def fit_metrics(data_pars=None, compute_pars=None, out_pars=None, **kw):
+def evaluate(data_pars=None, compute_pars=None, out_pars=None, **kw):
     """
        Return metrics of the model when fitted.
     """
@@ -347,7 +347,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
 
 
     log("#### Metrics   #####################################################")
-    metrics_val = fit_metrics(data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 

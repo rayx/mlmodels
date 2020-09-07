@@ -141,7 +141,7 @@ def fit(model=None, data_pars={}, compute_pars={}, out_pars={}, **kw):
 
 
 
-def fit_metrics(model, data_pars=None, compute_pars=None, out_pars=None, model_pars=None, **kw):
+def evaluate(model, data_pars=None, compute_pars=None, out_pars=None, model_pars=None, **kw):
     ### return model.history[-1]
 
     ddict = {}

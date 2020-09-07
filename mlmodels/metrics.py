@@ -147,7 +147,7 @@ def metrics_eval(metric_list=["mean_squared_error"], ytrue=None, ypred=None, ypr
       mdict["metric_name"].append(metric_name)
       mdict["metric_val"].append(mval)
 
-    
+    if return_dict : return mdict
 
     mdict = pd.DataFrame(mdict)
     return mdict

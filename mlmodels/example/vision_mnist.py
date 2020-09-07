@@ -60,7 +60,7 @@ model          = module.Model(model_pars, data_pars, compute_pars)
 
 #### Fit
 model, session = module.fit(model, data_pars, compute_pars, out_pars)           #### fit model
-metrics_val    = module.fit_metrics(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
+metrics_val    = module.evaluate(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
 print(metrics_val)
 
 
@@ -101,7 +101,7 @@ model          = module.Model(model_pars, data_pars, compute_pars)
 
 #### Fit
 model, session = module.fit(model, data_pars, compute_pars, out_pars)           #### fit model
-metrics_val    = module.fit_metrics(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
+metrics_val    = module.evaluate(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
 print(metrics_val)
 
 
@@ -142,7 +142,7 @@ model          = module.Model(model_pars, data_pars, compute_pars)
 
 #### Fit
 model, session = module.fit(model, data_pars, compute_pars, out_pars)           #### fit model
-metrics_val    = module.fit_metrics(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
+metrics_val    = module.evaluate(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
 print(metrics_val)
 
 
@@ -226,7 +226,7 @@ for model_name in valid_models:
 
     #### Fit
     model, session = module.fit(model, data_pars, compute_pars, out_pars)           #### fit model
-    metrics_val    = module.fit_metrics(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
+    metrics_val    = module.evaluate(model, data_pars, compute_pars, out_pars)   #### Check fit metrics
     print(metrics_val)
 
 

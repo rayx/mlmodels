@@ -58,7 +58,7 @@ ypred
 
 
 
-metrics_val = module.fit_metrics(model, data_pars, compute_pars, out_pars)
+metrics_val = module.evaluate(model, data_pars, compute_pars, out_pars)
 print(metrics_val)
 
 

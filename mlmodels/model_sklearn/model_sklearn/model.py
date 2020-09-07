@@ -25,7 +25,7 @@ module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_par
 module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 #### Inference
-metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars) # get stats
+metrics_val   =  module.evaluate(data_pars, compute_pars, out_pars) # get stats
 ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict pipeline
 
 
@@ -33,10 +33,10 @@ ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict 
 """
 import os, sys, copy
 import pandas as pd
+from copy import deepcopy
 
 
 import sklearn
-
 from sklearn.linear_model import *
 from sklearn.svm import *
 from sklearn.ensemble import *
@@ -45,10 +45,10 @@ from sklearn.tree import *
 
 
 ####################################################################################################
-######## Logs, root path
 from mlmodels.util import log, path_norm, get_model_uri
 
-
+def json_parse(js):
+    return js
 
 
 VERBOSE = False
@@ -65,7 +65,10 @@ def init(*kw, **kwargs) :
 
 class Model(object):
     def __init__(self, model_pars=None, data_pars=None, compute_pars=None):
-        self.model_pars, self.compute_pars = copy.deepcopy(model_pars), compute_pars
+        self.model_pars, self.compute_pars, self.data_pars = deepcopy(model_pars), deepcopy(compute_pars), , deepcopy(data_pars)
+
+
+        data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
         if model_pars is None :
             self.model = None
@@ -74,41 +77,48 @@ class Model(object):
             # del model_pars["model_name"]
 
             #### Specific to SKLEARN model
-            mpars = model_pars.get('model_pars', {})
+            mpars      = model_pars.get('model_pars', {})
             self.model = model_class(**mpars)
 
 
+def fit(data_pars=None, compute_pars=None, out_pars=None, verbose=False,  **kw):
+    """
+    """
+    global model, session
+    data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
-def fit(data_pars=None, compute_pars=None, out_pars=None, **kw):
-    """
-    """
     Xtrain, ytrain, Xtest,  ytest = get_dataset(data_pars, task_type="train")
-    cpars = compute_pars.get("compute_pars", {})
-    model.model = model.model.fit(Xtrain, ytrain, **cpars)
+    task_pars = compute_pars.get("fit_pars", {})
+    model.model = model.model.fit(Xtrain, ytrain, **task_pars)
 
 
-def fit_metrics(data_pars=None, compute_pars=None, out_pars=None, verbose=False, **kw):
+def evaluate(data_pars=None, compute_pars=None, out_pars=None, verbose=False, **kw):
+    """
+       Return metrics of the model
+    """
+    global model, session
     from sklearn.metrics import roc_auc_score, accuracy_score
-    """
-       Return metrics of the model when fitted.
-    """
-    Xval, yval = get_dataset(data_pars, task_type="eval")
+    from mlmodels.metrics import metrics_eval
+    data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
-    #### Do prediction
-    ypred = model.model.predict(Xval)    
-    if verbose : print(data_pars)
+    task_pars  = compute_pars.get("evaluate_pars", {})
+    Xval, yval = get_dataset(data_pars, task_type="eval")
+    ypred      = model.model.predict(Xval, **task_pars)    
+    if verbose : log(data_pars)
     
-    score = accuracy_score(yval, ypred)
-    ddict = {"accuracy":score}
+    metrics  = data_pars.get('metrics', ['accuracy'])
+    df_score = metrics_eval(metric_list=metrics, ytrue=yval, ypred=ypred, ypred_proba=None, return_dict=0)
+    ddict    = {"metrics": df_score}
     return ddict
 
 
+def predict(data_pars=None, compute_pars=None, out_pars=None, verbose=False,  **kw):
+    global model, session
+    data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
-def predict(data_pars=None, compute_pars=None, out_pars=None, **kw):
-    Xpred = get_dataset(data_pars, task_type="pred")
-    ppars = compute_pars.get("pred_pars", {})
-    ypred = model.model.predict(Xpred, **ppars)
-
+    Xpred     = get_dataset(data_pars, task_type="pred")
+    task_pars = compute_pars.get("predict_pars", {})
+    ypred     = model.model.predict(Xpred, **task_pars)
 
     ### Return val
     if compute_pars.get("return_pred_not") is not None:
@@ -132,7 +142,6 @@ def save(path=None, info={}):
     pickle.dump(info, open( f"{path}/{filename}" , mode='wb')) #,protocol=pickle.HIGHEST_PROTOCOL )   
     
     
-
 def load(path=""):
     global model, session
     import cloudpickle as pickle
@@ -157,56 +166,31 @@ def load_info(path=""):
     return dd
 
 
-
 ####################################################################################################
-def preprocessor_ram(data_pars=None, task_type="train", **kw):
-    """
-      "ram"  : 
-      "file" :
-    """
-    # log(data_pars)
-    data_type = data_pars.get('type', 'ram') 
-    if data_type == "ram"  :
-        if task_type == "predict"  :
-            d = data_pars[task_type]
-            return d["X"]
-        
-        if task_type == "eval"  :
-            d = data_pars[task_type]
-            return d["X"], d["y"]
-        
-        if task_type == "train"  :
-            d = data_pars[task_type]
-            return d["Xtrain"], d["ytrain"],  d["Xtest"], d["ytest"]
-
-    elif data_type == "file"  :   
-        raise Exception(f' {data_type} data_type Not implemented ')
-
-
 def get_dataset(data_pars=None, **kw):
     """
-            "data_pars": {
-            "data_info": {
-                "data_path": "dataset/tabular/",
-                "dataset":   "csv titanic",
-                "data_type": "csv",
-                // "batch_size": 10,
-                "task_type": "train"    // "pred"  "eval"
-            },
-            "preprocessors": [
-            {
-                "uri"  : "mlmodels.preprocess.generic.pandas_reader",
-                "args"  : {
-                           "task_type": "train", 
-                           "path" : "dataset/tabular/titanic_train_preprocessed.csv",
-                           "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
-                           "coly": "Survived",
-                           "path_eval" : "",
-                           "train_split_ratio" : 0.8,
-                          },
-                "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]          
-            }]    
-            },
+        "data_pars": {
+        "data_info": {
+            "data_path": "dataset/tabular/",
+            "dataset":   "csv titanic",
+            "data_type": "csv",
+            // "batch_size": 10,
+            "task_type": "train"    // "pred"  "eval"
+        },
+        "preprocessors": [
+        {
+            "uri"  : "mlmodels.preprocess.generic.pandas_reader",
+            "args"  : {
+                       "task_type": "train", 
+                       "path" : "dataset/tabular/titanic_train_preprocessed.csv",
+                       "colX": ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked_Q", "Embarked_S", "Title"],
+                       "coly": "Survived",
+                       "path_eval" : "",
+                       "train_split_ratio" : 0.8,
+                      },
+            "out"   :  [  "Xtrain", "ytrain", "Xtest", "ytest" ]          
+        }]    
+        },
     """ 
     from mlmodels.dataloader import DataLoader
 
@@ -231,46 +215,6 @@ def get_dataset(data_pars=None, **kw):
 
     else :
        raise Exception(f"Unknown task {task}") 
-
-
-
-
-def get_dataset2(data_pars=None, **kw):
-    """
-      JSON data_pars to get dataset
-      "data_pars":    { "data_path": "dataset/GOOG-year.csv", "data_type": "pandas",
-      "size": [0, 0, 6], "output_size": [0, 6] },
-    """
-
-    if data_pars['mode'] == 'test':
-        from sklearn.datasets import  make_classification
-        from sklearn.model_selection import train_test_split
-
-        X, y = make_classification(n_features=10, n_redundant=0, n_informative=2,
-                                   random_state=1, n_clusters_per_class=1)
-
-        # print(X,y)
-        Xtrain, Xtest, ytrain, ytest = train_test_split(X, y)
-        return Xtrain,  ytrain, Xtest, ytest
-
-
-    if data_pars['train']:
-        from sklearn.model_selection import train_test_split
-        df = pd.read_csv(data_pars['path'] )
-        dfX = df[data_pars['colX']]
-        dfy = df[data_pars['coly']]
-        Xtrain, Xtest, ytrain, ytest =  train_test_split(dfX.values, dfy.values)
-        return Xtrain,  ytrain, Xtest, ytest
-
-    else:
-        df = pd.read_csv(data_pars['path'] )
-        dfX = df[data_pars['colX']]
-        
-        Xtest, ytest = dfX, None
-        return None, None, Xtest, ytest
-
-
-
 
 
 def get_params(param_pars={}, **kw):
@@ -326,7 +270,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
     ypred = predict(data_pars, compute_pars, out_pars)
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(data_pars, compute_pars, out_pars)
     print(metrics_val)
 
     log("#### Plot   ########################################################")
@@ -336,7 +280,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
     model2, session = load( save_pars)
     print(model2.model)
     # ypred = predict(model2, data_pars, compute_pars, out_pars)
-    metrics_val = fit_metrics(model2, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(model2, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 
@@ -367,6 +311,71 @@ if __name__ == '__main__':
 
     param_pars = {'choice': "test01", 'config_mode': 'test', 'data_path': '/dataset/'}
     test_api(model_uri=MODEL_URI, param_pars=param_pars)
+
+
+
+
+def preprocessor_ram(data_pars=None, task_type="train", **kw):
+    """
+      "ram"  : 
+      "file" :
+    """
+    # log(data_pars)
+    data_type = data_pars.get('type', 'ram') 
+    if data_type == "ram"  :
+        if task_type == "predict"  :
+            d = data_pars[task_type]
+            return d["X"]
+        
+        if task_type == "eval"  :
+            d = data_pars[task_type]
+            return d["X"], d["y"]
+        
+        if task_type == "train"  :
+            d = data_pars[task_type]
+            return d["Xtrain"], d["ytrain"],  d["Xtest"], d["ytest"]
+
+    elif data_type == "file"  :   
+        raise Exception(f' {data_type} data_type Not implemented ')
+
+
+
+
+def get_dataset2(data_pars=None, **kw):
+    """
+      JSON data_pars to get dataset
+      "data_pars":    { "data_path": "dataset/GOOG-year.csv", "data_type": "pandas",
+      "size": [0, 0, 6], "output_size": [0, 6] },
+    """
+
+    if data_pars['mode'] == 'test':
+        from sklearn.datasets import  make_classification
+        from sklearn.model_selection import train_test_split
+
+        X, y = make_classification(n_features=10, n_redundant=0, n_informative=2,
+                                   random_state=1, n_clusters_per_class=1)
+
+        # print(X,y)
+        Xtrain, Xtest, ytrain, ytest = train_test_split(X, y)
+        return Xtrain,  ytrain, Xtest, ytest
+
+
+    if data_pars['train']:
+        from sklearn.model_selection import train_test_split
+        df = pd.read_csv(data_pars['path'] )
+        dfX = df[data_pars['colX']]
+        dfy = df[data_pars['coly']]
+        Xtrain, Xtest, ytrain, ytest =  train_test_split(dfX.values, dfy.values)
+        return Xtrain,  ytrain, Xtest, ytest
+
+    else:
+        df = pd.read_csv(data_pars['path'] )
+        dfX = df[data_pars['colX']]
+        
+        Xtest, ytest = dfX, None
+        return None, None, Xtest, ytest
+
+
 
 
 

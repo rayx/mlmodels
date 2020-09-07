@@ -111,7 +111,7 @@ def fit(model, data_pars=None, compute_pars=None, out_pars=None, **kw):
     return model, sess
 
 
-def fit_metrics(model, data_pars=None, compute_pars=None, out_pars=None, **kw):
+def evaluate(model, data_pars=None, compute_pars=None, out_pars=None, **kw):
     """
        Return metrics ofw the model when fitted.
     """
@@ -323,7 +323,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
     ypred, _ = predict(module, model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+    metrics_val = evaluate(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
     print(metrics_val)
 
     log("#### Plot   ########################################################")

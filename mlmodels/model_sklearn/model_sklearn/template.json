@@ -84,13 +84,21 @@
 
         "compute_pars" :  { 
             "return_pred_not": false,
+
+            ## Specific to the model
             "compute_pars": {
                 "sample_weight" : null,
             },
 
-            "prediction_pars" :{
-            }   
+            "fit_pars" :{
+              "sample_weight" : null,
+            },   
 
+            "evaluate_pars" :{
+            },   
+
+            "predict_pars" :{
+            },   
 
 
 

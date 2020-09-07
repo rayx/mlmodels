@@ -68,7 +68,7 @@ config_get_pars(config_file,  config_mode="test",  )
 config_init( to_path=".",  )
 config_model_list( folder=None,  )
 fit(module, model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  **kwarg)
-fit_metrics(module, model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  **kwarg)
+evaluate(module, model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  **kwarg)
 get_params(module, params_pars,   **kwarg)
 load(module, load_pars,   **kwarg)
 main(  )
@@ -942,7 +942,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  **kwa
 
 ---------------functions---------------
 fit(model,  sess=None, data_pars=None, model_pars=None, compute_pars=None, out_pars=None, session=None,  **kwargs)
-fit_metrics(ypred, data_pars,  compute_pars=None, out_pars=None,  **kw)
+evaluate(ypred, data_pars,  compute_pars=None, out_pars=None,  **kw)
 get_dataset(data_pars,   )
 get_params( choice="", data_path="dataset/timeseries/", config_mode="test",  **kw)
 load(path,   )
@@ -1085,7 +1085,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit( model=None, data_pars={}, compute_pars={}, out_pars={},  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None, model_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None, model_pars=None,  **kw)
 get_dataset(data_pars,   )
 get_params( param_pars={},  **kw)
 load( load_pars={},  **kw)
@@ -1103,7 +1103,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None, out_pa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  )
 get_config_file(  )
 get_dataset( data_pars=None,  )
 get_dataset_imbd(data_pars,   )
@@ -1120,7 +1120,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars=None,  )
@@ -1136,7 +1136,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars={}, compute_pars={}, out_pars={},  **kw)
-fit_metrics(model,  data_pars={}, compute_pars={}, out_pars={},  **kw)
+evaluate(model,  data_pars={}, compute_pars={}, out_pars={},  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars={},  )
@@ -1152,7 +1152,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None, out_pa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  )
 get_config_file(  )
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars=None,  **kw)
@@ -1169,7 +1169,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  **kwa
 ---------------functions---------------
 _preprocess_test(data_pars,   **kw)
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset(data_pars,   **kw)
 get_params( param_pars={},  **kw)
 load(load_pars,   )
@@ -1185,7 +1185,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  **kwa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset(data_pars,   )
 get_params( param_pars={},  **kw)
 load(load_pars,   )
@@ -1201,7 +1201,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars=None,  )
@@ -1230,7 +1230,7 @@ mlmodels\model_keras\textcnn.py
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars={},  )
@@ -1249,7 +1249,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars={},  )
@@ -2693,7 +2693,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars=None,  )
@@ -2709,7 +2709,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars={},  )
@@ -3294,7 +3294,7 @@ mlmodels\model_tch\03_nbeats_dataloader.py
 Model(model_pars, data_pars, compute_pars,   )
 data_generator(x_full, y_full, bs,   )
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model, data_pars, compute_pars, out_pars,   )
+evaluate(model, data_pars, compute_pars, out_pars,   )
 fit_simple(net, optimiser, data_generator, on_save_callback, device, data_pars, out_pars,  max_grad_steps=500,  )
 get_dataset(data_pars,   )
 get_params(param_pars,   **kw)
@@ -3315,7 +3315,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None, out_pa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  )
 get_config_file(  )
 get_dataset( data_pars=None,  **kw)
 get_dataset_wikiqa(data_pars, model,   )
@@ -3375,7 +3375,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None, out_pa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  )
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars=None,  **kw)
 load(load_pars,   )
@@ -3400,7 +3400,7 @@ clean_str(string,   )
 create_data_iterator(tr_batch_size, val_batch_size, tabular_train, tabular_valid, d,   )
 create_tabular_dataset(path_train, path_valid,  lang='en', pretrained_emb='glove.6B.300d',  )
 fit(model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
+evaluate(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
 get_config_file(  )
 get_data_file(  )
 get_dataset( data_pars=None, out_pars=None,  **kwargs)
@@ -3421,7 +3421,7 @@ _get_device(  )
 _train(m, device, train_itr, criterion, optimizer, epoch, max_epoch,  imax=1,  )
 _valid(m, device, test_itr, criterion,  imax=1,  )
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwargs)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  )
 get_config_file(  )
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars=None,  **kw)
@@ -3439,7 +3439,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  )
 ---------------functions---------------
 _preprocess_XXXX(df,   **kw)
 fit(train_dataset, model, tokenizer,   )
-fit_metrics(model, tokenizer, model_pars, data_pars, out_pars, compute_pars,  prefix="",  )
+evaluate(model, tokenizer, model_pars, data_pars, out_pars, compute_pars,  prefix="",  )
 get_dataset(task, tokenizer,  evaluate=False,  )
 get_eval_report(labels, preds,   )
 get_mismatched(labels, preds,   )
@@ -3457,7 +3457,7 @@ mlmodels\model_tch\transformer_sentence.py
 
 ---------------functions---------------
 fit(model,  data_pars=None, model_pars=None, compute_pars=None, out_pars=None,  *args, **kw)
-fit_metrics(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  session=None, data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params(param_pars,   **kw)
 load( load_pars=None,  )
@@ -5924,7 +5924,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  **kwa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwarg)
-fit_metrics(model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  )
 get_dataset( data_pars=None,  )
 get_params( param_pars={},  **kw)
 load( load_pars=None,  )
@@ -5941,7 +5941,7 @@ Model.__init__(self,  model_pars=None, data_pars=None, compute_pars=None,  **kwa
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kwarg)
-fit_metrics(model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  )
+evaluate(model,  sess=None, data_pars=None, compute_pars=None, out_pars=None,  )
 get_dataset( data_pars=None,  )
 get_params( param_pars={},  **kw)
 load( load_pars=None,  )
@@ -13603,7 +13603,7 @@ mlmodels\template\model_xxx.py
 
 ---------------functions---------------
 fit(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
-fit_metrics(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
+evaluate(model,  data_pars=None, compute_pars=None, out_pars=None,  **kw)
 get_dataset( data_pars=None,  **kw)
 get_params( param_pars={},  **kw)
 load( load_pars={},  )

@@ -148,7 +148,7 @@ def predict(model, session=None, data_pars=None, compute_pars=None, out_pars=Non
     return predicted_y
 
 
-def fit_metrics(model, data_pars=None, compute_pars=None, out_pars=None):
+def evaluate(model, data_pars=None, compute_pars=None, out_pars=None):
     _, _, x_test, y_test = get_dataset(data_pars)
     return model.evaluate(x_test, y_test)
 
@@ -183,7 +183,7 @@ def test_single(data_path="dataset/", pars_choice="json", config_mode="test"):
     print(ypred[:10])
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(fitted_model, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(fitted_model, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
     log("#### Plot   ########################################################")

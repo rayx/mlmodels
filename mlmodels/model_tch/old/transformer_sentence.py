@@ -175,7 +175,7 @@ def fit(model, data_pars=None, model_pars=None, compute_pars=None, out_pars=None
 
 
 
-def fit_metrics(model, session=None, data_pars=None, compute_pars=None, out_pars=None, **kw):
+def evaluate(model, session=None, data_pars=None, compute_pars=None, out_pars=None, **kw):
     """
        Return metrics of the model when fitted.
     """
@@ -453,7 +453,7 @@ def test(data_path="dataset/", pars_choice="test01", config_mode="test"):
 
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, ypred, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(model, ypred, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 

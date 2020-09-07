@@ -264,7 +264,7 @@ class Model:
 
 
 
-def fit_metrics(model, session=None, data_pars=None, compute_pars=None, out_pars=None, **kwargs):
+def evaluate(model, session=None, data_pars=None, compute_pars=None, out_pars=None, **kwargs):
     # return metrics on full dataset
     device = _get_device()
     data_pars = data_pars.copy()
@@ -465,7 +465,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
 
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, session, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(model, session, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
     log("#### Plot   ########################################################")

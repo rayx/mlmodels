@@ -181,8 +181,8 @@ def predict(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
     return module.predict(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars, **kwarg)
 
 
-def fit_metrics(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
-    return module.fit_metrics(data_pars, compute_pars, out_pars, **kwarg)
+def evaluate(module, data_pars=None, compute_pars=None, out_pars=None, **kwarg):
+    return module.evaluate(data_pars, compute_pars, out_pars, **kwarg)
 
 
 def get_params(module, params_pars, **kwarg):
@@ -316,7 +316,7 @@ def test_module(model_uri="model_xxxx/yyyy.py", param_pars=None, fittable = True
 
     log("#### Get  metrics   ################################################")
     if fittable:
-        metrics_val = module.fit_metrics(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+        metrics_val = module.evaluate(model, data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
     log("#### Save   ########################################################")
     # save_pars = {}

@@ -144,7 +144,7 @@ def optim_optuna(model_uri="model_tf.1_lstm.py",
         if VERBOSE: log(model)
 
         module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
-        metrics = module.fit_metrics(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
+        metrics = module.evaluate(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
         mtarget = metrics[metric_target]
         try:
             module.reset_model()  # Reset Graph for TF

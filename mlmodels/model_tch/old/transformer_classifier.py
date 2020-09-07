@@ -246,7 +246,7 @@ def fit(train_dataset, model, tokenizer):
                 if compute_pars['logging_steps'] > 0 and global_step % compute_pars['logging_steps'] == 0:
                     # Log metrics
                     if compute_pars['evaluate_during_training']:  # Only evaluate when single GPU otherwise metrics may not average well
-                        results, _ = fit_metrics(model, tokenizer)
+                        results, _ = evaluate(model, tokenizer)
                         for key, value in results.items():
                             tb_writer.add_scalar('eval_{}'.format(key), value, global_step)
                     tb_writer.add_scalar('lr', scheduler.get_lr()[0], global_step)
@@ -294,7 +294,7 @@ def metrics(task_name, preds, labels):
     return get_eval_report(labels, preds)
 
 
-def fit_metrics(model, tokenizer, model_pars,data_pars, out_pars, compute_pars, prefix=""):
+def evaluate(model, tokenizer, model_pars,data_pars, out_pars, compute_pars, prefix=""):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = data_pars['output_dir']
 
@@ -501,7 +501,7 @@ def test(data_path,model_pars, data_pars, compute_pars, out_pars, pars_choice=0)
             global_step = checkpoint.split('-')[-1] if len(checkpoints) > 1 else ""
             model_eval = model.model.from_pretrained(checkpoint)
             model_eval.to(device)
-            result, wrong_preds = fit_metrics(model_eval, model.tokenizer,model_pars, data_pars, compute_pars, out_pars, prefix=global_step)
+            result, wrong_preds = evaluate(model_eval, model.tokenizer,model_pars, data_pars, compute_pars, out_pars, prefix=global_step)
             result = dict((k + '_{}'.format(global_step), v) for k, v in result.items())
             results.update(result)
     print(results)

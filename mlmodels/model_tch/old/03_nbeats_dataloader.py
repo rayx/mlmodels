@@ -117,7 +117,7 @@ def predict(model, sess, data_pars=None, compute_pars=None, out_pars=None, **kw)
     return p
 
 
-def fit_metrics(model, data_pars, compute_pars, out_pars):
+def evaluate(model, data_pars, compute_pars, out_pars):
     pass
 
 

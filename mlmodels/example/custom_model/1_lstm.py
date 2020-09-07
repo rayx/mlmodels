@@ -117,7 +117,7 @@ def fit(model, data_pars=None, compute_pars=None,  out_pars=None, **kwarg):
     return model,sess
 
 
-def fit_metrics(model, sess=None, data_pars=None, compute_pars=None, out_pars=None):
+def evaluate(model, sess=None, data_pars=None, compute_pars=None, out_pars=None):
     """
        Return metrics of the model stored
     """
@@ -303,7 +303,7 @@ def test(data_path="dataset/", pars_choice="test01", config_mode="test"):
 
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(model, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 

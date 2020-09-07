@@ -187,7 +187,7 @@ module.init(model_pars=model_pars, data_pars=data_pars, compute_pars=compute_par
 module.fit(data_pars=data_pars, compute_pars=compute_pars, out_pars=out_pars)
 
 #### Inference
-metrics_val   =  module.fit_metrics(data_pars, compute_pars, out_pars) # get stats
+metrics_val   =  module.evaluate(data_pars, compute_pars, out_pars) # get stats
 ypred         = module.predict(data_pars, compute_pars, out_pars)     # predict pipeline
 ```
 

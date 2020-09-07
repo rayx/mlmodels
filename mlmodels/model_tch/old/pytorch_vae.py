@@ -158,7 +158,7 @@ def predict(model, session=None, data_pars=None, compute_pars=None, out_pars=Non
     else:
         return y_pred
 
-def fit_metrics(model, data_pars=None, compute_pars=None, out_pars=None):
+def evaluate(model, data_pars=None, compute_pars=None, out_pars=None):
     pass
 
 
@@ -198,7 +198,7 @@ def test(data_path="dataset/", pars_choice="json", config_mode="test"):
 
 
     log("#### metrics   #####################################################")
-    metrics_val = fit_metrics(model, data_pars, compute_pars, out_pars)
+    metrics_val = evaluate(model, data_pars, compute_pars, out_pars)
     print(metrics_val)
 
 
