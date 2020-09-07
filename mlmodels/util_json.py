@@ -248,7 +248,7 @@ def json_parse(ddict) :
             return json_norm(d2)
         
     for k,val in js.items() :
-        if isintance(val, dict):
+        if isinstance(val, dict):
             js2[k] = parse2(val)
             
         elif  "uri::" in val :   ## Shortcut when nor argument
