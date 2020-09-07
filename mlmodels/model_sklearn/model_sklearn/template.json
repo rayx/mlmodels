@@ -57,10 +57,7 @@
                 "data_path": "dataset/tabular/",
                 "dataset":   "csv titanic",
                 "data_type": "csv",
-                # "batch_size": 10,
-
-                # "train" ,  pred",   "eval"
-                "task_type": "train"   
+                "batch_size": 10,
             },
             "preprocessors": [
             {

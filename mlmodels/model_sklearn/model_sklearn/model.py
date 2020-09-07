@@ -67,8 +67,7 @@ class Model(object):
     def __init__(self, model_pars=None, data_pars=None, compute_pars=None):
         self.model_pars, self.compute_pars, self.data_pars = deepcopy(model_pars), deepcopy(compute_pars), , deepcopy(data_pars)
 
-
-        data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
+        # data_pars, compute_pars   = json_parse(data_pars), json_parse(compute_pars)
 
         if model_pars is None :
             self.model = None
@@ -197,7 +196,7 @@ def get_dataset(data_pars=None, **kw):
     if "dataset" not in data_pars['data_info'] :
       raise Exception("need dataset in data_info")        
 
-    task   = data_pars['task_type']
+    task   = kw['task_type']
     loader = DataLoader(data_pars)
     loader.compute()
 

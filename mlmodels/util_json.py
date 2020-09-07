@@ -235,7 +235,6 @@ def json_parse(ddict) :
                  "distr_output" :  {"uri" : "gluonts.distribution.neg_binomial:NegativeBinomialOutput"}, 
 
                  "distr_output" :  "uri::gluonts.distribution.neg_binomial:NegativeBinomialOutput", 
-
     """
     import copy
     js = ddict
