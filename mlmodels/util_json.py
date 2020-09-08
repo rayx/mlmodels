@@ -215,6 +215,8 @@ def json_to_object(ddict):
 
         
 def json_norm_val(x):
+    if isinstance(x, list) : return x
+    if isinstance(x, dict) : return x
     if x == "none" or x == "None"   : return None
     if x == "" :     return None
     else : return x
