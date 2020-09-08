@@ -215,11 +215,12 @@ def json_to_object(ddict):
 
         
 def json_norm_val(x):
-    if x == "none" : return None
+    if x == "none" or x == "None"   : return None
     if x == "" :     return None
+    else : return x
     
 def json_norm(ddict):
-     return { json_norm_val(x)     for k,x in ddict.items() }
+     return { key:json_norm_val(x)     for key,x in ddict.items() }
         
 def json_parse(ddict) :
     """
