@@ -1,0 +1,7 @@
+[
+    {
+        "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/autoencoder.py:reducedimension",
+        "args": ["input_"],
+        "kwargs": {"dimension": 2, "learning_rate": 0.01, "hidden_layer": 256, "epoch": 20}
+    }
+]

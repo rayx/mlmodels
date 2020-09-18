@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/13_lstm_seq2seq.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/13_lstm_seq2seq.py:Model:__init__",
+                "args": ["learning_rate", "num_layers", "size", "size_layer", "output_size"],
+                "kwargs": {"forget_bias": 0.1, "epoch": 500, "timestep": 5}
+            }
+        ]
+    }
+]

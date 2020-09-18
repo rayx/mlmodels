@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/25_dnc.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/25_dnc.py:Model:__init__",
+                "args": ["learning_rate", "size", "size_layer", "output_size", "epoch", "timestep", "access_config", "controller_config", "clip_value"],
+                "kwargs": {}
+            }
+        ]
+    }
+]
