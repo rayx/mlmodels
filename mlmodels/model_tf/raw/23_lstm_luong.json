@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/23_lstm_luong.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/23_lstm_luong.py:Model:__init__",
+                "args": ["learning_rate", "num_layers", "size", "size_layer", "output_size"],
+                "kwargs": {"forget_bias": 0.1, "attention_size": 10, "epoch": 100, "timestep": 5}
+            }
+        ]
+    }
+]

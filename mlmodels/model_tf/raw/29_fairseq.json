@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/29_fairseq.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/29_fairseq.py:Model:__init__",
+                "args": ["n_layers", "size", "output_size", "emb_size", "n_hidden", "n_attn_heads", "learning_rate"],
+                "kwargs": {"epoch": 1, "timestep": 5}
+            }
+        ]
+    }
+]

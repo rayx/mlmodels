@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/19_lstm_dilated.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/19_lstm_dilated.py:Model:__init__",
+                "args": ["steps", "dimension_input", "dimension_output"],
+                "kwargs": {"learning_rate": 0.001, "hidden_structs": null, "dilations": null, "epoch": 500}
+            }
+        ]
+    }
+]

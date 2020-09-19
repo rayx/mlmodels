@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/18_lstm_attention_scaleddot.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/18_lstm_attention_scaleddot.py:Model:__init__",
+                "args": ["learning_rate", "num_layers", "size", "size_layer", "output_size", "seq_len"],
+                "kwargs": {"forget_bias": 0.1, "epoch": 500}
+            }
+        ]
+    }
+]

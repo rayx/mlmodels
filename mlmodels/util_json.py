@@ -7,6 +7,9 @@ Alll related to json dynamic parsing
 import os
 import re
 import fnmatch
+import ast
+import json
+import sys
 
 # import toml
 from pathlib import Path
@@ -408,6 +411,156 @@ def json_csv_to_json(file_csv="", out_path="dataset/"):
     return dicts
 
 
+class EmptyOutput(Exception):
+    pass
+
+
+class Transform(ast.NodeVisitor):
+    def __init__(self, srcfile):
+        self.srcfile = os.path.abspath(srcfile)
+        self.data = []
+        with open(self.srcfile) as f:
+            self.tree = ast.parse(f.read())
+        self.visit(self.tree)
+        self.datafile = os.path.splitext(self.srcfile)[0] + ".json"
+        with open(self.datafile, 'w') as f:
+            output = json.dumps(self.data, indent=4) + '\n'
+            f.write(self.mergelines(output))
+
+    def getname(self, node):
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Attribute):
+            return self.getname(node.value) + "." + node.attr
+
+    def getvalue(self, node):
+        if isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.NameConstant):
+            return node.value
+        elif isinstance(node, ast.Name) or isinstance(node, ast.Attribute):
+            return self.getname(node)
+
+    def getsignature(self, node: ast.FunctionDef, parenturi):
+        fndata = {"uri": "%s:%s" % (parenturi, node.name), "args": [], "kwargs": {}}
+        argumentnode = node.args
+        identifiers = [argnode.arg for argnode in argumentnode.args
+                       if argnode.arg != "self"]
+        values = [self.getvalue(valnode) for valnode in argumentnode.defaults]
+        size = len(identifiers)
+        for index, name in enumerate(identifiers):
+            try:
+                value = values[index - size]
+                fndata["kwargs"][name] = value
+            except IndexError:
+                fndata["args"].append(name)
+        return fndata
+
+    def _mergeitems(self, text, keyword, offset, open_bracket, close_bracket):
+        start = 0
+        while start <= len(text):
+            index_start = text.find(keyword, start)
+            if index_start == -1:
+                break
+            index_start += offset
+            index_end = index_start
+            count = 1
+            while index_end <= len(text) - 1:
+                if text[index_end] == open_bracket:
+                    count += 1
+                if text[index_end] == close_bracket:
+                    count -= 1
+                if count == 0:
+                    break
+                index_end += 1
+            if count != 0:
+                raise Exception("Failed to find close bracket '%s' when processing %s" %
+                                (close_bracket, self.datafile))
+            text = text[:index_start] + ' '.join(text[index_start:index_end].split()) + \
+                   text[index_end:]
+            start = index_end + 1
+        return text
+
+    def mergelines(self, text):
+        # Merge all items of args list into a single line
+        keyword1 = '"args": ['
+        open_bracket1 = '['
+        close_bracket1 = ']'
+        text = self._mergeitems(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
+        # Merge all items of kwargs dict into a single line
+        keyword1 = '"kwargs": {'
+        open_bracket1 = '{'
+        close_bracket1 = '}'
+        text = self._mergeitems(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
+        return text
+
+
+class FuncTransform(Transform):
+    def __init__(self, srcfile):
+        self.data = []
+        super().__init__(srcfile)
+
+    def visit_Module(self, node):
+        for stmtnode in node.body:
+            if isinstance(stmtnode, ast.FunctionDef):
+                self.data.append(self.getsignature(stmtnode, self.srcfile))
+
+
+class ClassTransform(Transform):
+    def __init__(self, srcfile):
+        self.data = []
+        super().__init__(srcfile)
+
+    def visit_ClassDef(self, node):
+        if node not in self.tree.body:
+            return
+        clsuri = "%s:%s" % (self.srcfile, node.name)
+        methods = []
+        for stmtnode in node.body:
+            if isinstance(stmtnode, ast.FunctionDef):
+                methods.append(self.getsignature(stmtnode, clsuri))
+        self.data.append({clsuri: methods})
+
+
+def _transform(srcfile):
+    try:
+        with open(srcfile) as f:
+            tree = ast.parse(f.read())
+        hasClassDef = False
+        for node in tree.body:
+            if isinstance(node, ast.ClassDef):
+                hasClassDef = True
+                break
+        if hasClassDef:
+            t = ClassTransform(srcfile)
+        else:
+            t = FuncTransform(srcfile)
+        print(t.datafile)
+    except FileNotFoundError:
+        print("Failed to find %s." % srcfile, file=sys.stderr)
+    except EmptyOutput:
+        print("Skipped %s." % srcfile, file=sys.stderr)
+    except Exception as e:
+        print("Failed to process %s." % srcfile, file=sys.stderr)
+        print(e, file=sys.stderr)
+
+
+def transform(path):
+    if os.path.isfile(path):
+        _transform(path)
+    elif os.path.isdir(path):
+        for root, _, files in os.walk(path):
+            for filename in files:
+                _, suffix = os.path.splitext(filename)
+                if suffix != ".py":
+                    continue
+                filepath = root + "/" + filename
+                _transform(filepath)
+    else:
+        print("%s is not a regular file or directory." % path, file=sys.stderr)
+
 def test_json_conversion():
     """
     Function to test converting jsons in dataset/json to normalized jsons
@@ -430,7 +583,3 @@ if __name__ == "__main__":
     fire.Fire()
     
     ### python mlmodels/util_json.py  test_json_conversion
-    
-    
-    
-    

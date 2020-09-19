@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_tf/raw/26_lstm_residual.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_tf/raw/26_lstm_residual.py:Model:__init__",
+                "args": ["learning_rate", "num_layers", "size", "size_layer", "output_size"],
+                "kwargs": {"epoch": 1, "timestep": 5}
+            }
+        ]
+    }
+]

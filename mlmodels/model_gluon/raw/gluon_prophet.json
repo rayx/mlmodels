@@ -1,0 +1,11 @@
+[
+    {
+        "/home/rayx/mlmodels/mlmodels/model_gluon/raw/gluon_prophet.py:Model": [
+            {
+                "uri": "/home/rayx/mlmodels/mlmodels/model_gluon/raw/gluon_prophet.py:Model:__init__",
+                "args": [],
+                "kwargs": {"model_pars": null, "data_pars": null, "compute_pars": null}
+            }
+        ]
+    }
+]
