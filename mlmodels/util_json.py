@@ -411,29 +411,59 @@ def json_csv_to_json(file_csv="", out_path="dataset/"):
     return dicts
 
 
-class EmptyOutput(Exception):
+class EmptyJSONData(Exception):
+    """
+    The generated json data contains nothing. This may occur if user passes
+    a Python file containing no function or class defintion.
+    """
     pass
 
 
-class Transform(ast.NodeVisitor):
+class TransformBase(ast.NodeVisitor):
+    """
+    This is an abstract class. It has two subclasses: TransformFunc, which
+    extracts JSON from function definitions, and TransformClass, which
+    extracts JSON from class defintions. This class provides common functions
+    used by the two subclasses.
+
+    :param srcfile: path of Python source file
+    :raises EmptyJSONData: the generated json data contains nothing
+    """
     def __init__(self, srcfile):
         self.srcfile = os.path.abspath(srcfile)
         self.data = []
         with open(self.srcfile) as f:
             self.tree = ast.parse(f.read())
         self.visit(self.tree)
+        if not self.data:
+            raise EmptyJSONData()
         self.datafile = os.path.splitext(self.srcfile)[0] + ".json"
         with open(self.datafile, 'w') as f:
             output = json.dumps(self.data, indent=4) + '\n'
-            f.write(self.mergelines(output))
+            f.write(self.merge_lines(output))
 
-    def getname(self, node):
+    def get_name(self, node):
+        """
+        Get name string from an ast.Name or ast.Attribute node.
+
+        :param node: a node of ast.Name or ast.Attribute type
+        :returns: name string
+        """
         if isinstance(node, ast.Name):
             return node.id
         elif isinstance(node, ast.Attribute):
-            return self.getname(node.value) + "." + node.attr
+            return self.get_name(node.value) + "." + node.attr
 
-    def getvalue(self, node):
+    def get_value(self, node):
+        """
+        Get value from an AST node. If the node is of ast.Num, ast.Str,
+        ast.NameConstant type, the returned value is of Python int, str,
+        or bool type, respectively. If the node is of ast.Name or
+        ast.Attribute, the returned value is of Python str type.
+
+        :param node: an AST node
+        :returns: value
+        """
         if isinstance(node, ast.Num):
             return node.n
         elif isinstance(node, ast.Str):
@@ -441,14 +471,21 @@ class Transform(ast.NodeVisitor):
         elif isinstance(node, ast.NameConstant):
             return node.value
         elif isinstance(node, ast.Name) or isinstance(node, ast.Attribute):
-            return self.getname(node)
+            return self.get_name(node)
 
-    def getsignature(self, node: ast.FunctionDef, parenturi):
+    def get_signature(self, node: ast.FunctionDef, parenturi):
+        """
+        Generate JSON data for a function or method.
+
+        :param node: a node of ast.FunctionDef type
+        :param parenturi: URI of the parent node
+        :returns: JSON data representing the function or method
+        """
         fndata = {"uri": "%s:%s" % (parenturi, node.name), "args": [], "kwargs": {}}
         argumentnode = node.args
         identifiers = [argnode.arg for argnode in argumentnode.args
                        if argnode.arg != "self"]
-        values = [self.getvalue(valnode) for valnode in argumentnode.defaults]
+        values = [self.get_value(valnode) for valnode in argumentnode.defaults]
         size = len(identifiers)
         for index, name in enumerate(identifiers):
             try:
@@ -458,46 +495,58 @@ class Transform(ast.NodeVisitor):
                 fndata["args"].append(name)
         return fndata
 
-    def _mergeitems(self, text, keyword, offset, open_bracket, close_bracket):
-        start = 0
-        while start <= len(text):
-            index_start = text.find(keyword, start)
-            if index_start == -1:
-                break
-            index_start += offset
-            index_end = index_start
-            count = 1
-            while index_end <= len(text) - 1:
-                if text[index_end] == open_bracket:
-                    count += 1
-                if text[index_end] == close_bracket:
-                    count -= 1
-                if count == 0:
-                    break
-                index_end += 1
-            if count != 0:
-                raise Exception("Failed to find close bracket '%s' when processing %s" %
-                                (close_bracket, self.datafile))
-            text = text[:index_start] + ' '.join(text[index_start:index_end].split()) + \
-                   text[index_end:]
-            start = index_end + 1
-        return text
+    def merge_lines(self, text):
+        """
+        Merge items of args and kwargs to a single line.
 
-    def mergelines(self, text):
+        :param text: JSON data
+        :returns: merged JSON data
+        """
+        def _merge_lines(text, keyword, offset, open_bracket, close_bracket):
+            start = 0
+            while start <= len(text):
+                index_start = text.find(keyword, start)
+                if index_start == -1:
+                    break
+                index_start += offset
+                index_end = index_start
+                count = 1
+                while index_end <= len(text) - 1:
+                    if text[index_end] == open_bracket:
+                        count += 1
+                    if text[index_end] == close_bracket:
+                        count -= 1
+                    if count == 0:
+                        break
+                    index_end += 1
+                if count != 0:
+                    raise Exception("Failed to find close bracket '%s' when processing %s" %
+                                    (close_bracket, self.datafile))
+                text = text[:index_start] + ' '.join(text[index_start:index_end].split()) + \
+                    text[index_end:]
+                start = index_end + 1
+            return text
         # Merge all items of args list into a single line
         keyword1 = '"args": ['
         open_bracket1 = '['
         close_bracket1 = ']'
-        text = self._mergeitems(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
+        text = _merge_lines(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
         # Merge all items of kwargs dict into a single line
         keyword1 = '"kwargs": {'
         open_bracket1 = '{'
         close_bracket1 = '}'
-        text = self._mergeitems(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
+        text = _merge_lines(text, keyword1, len(keyword1), open_bracket1, close_bracket1)
         return text
 
 
-class FuncTransform(Transform):
+class TransformFunc(TransformBase):
+    """
+    The class generate JSON data for all functions defined in a Python
+    source file. It works by looking method defintions in a file and
+    generates JSON based on those methods' signatures.
+
+    :param srcfile: Python source file
+    """
     def __init__(self, srcfile):
         self.data = []
         super().__init__(srcfile)
@@ -505,10 +554,17 @@ class FuncTransform(Transform):
     def visit_Module(self, node):
         for stmtnode in node.body:
             if isinstance(stmtnode, ast.FunctionDef):
-                self.data.append(self.getsignature(stmtnode, self.srcfile))
+                self.data.append(self.get_signature(stmtnode, self.srcfile))
 
 
-class ClassTransform(Transform):
+class TransformClass(TransformBase):
+    """
+    The class generate JSON data for all classes defined in a Python
+    source file. It works by looking for method defintions in a class
+    and generates JSON based on those methods' signatures.
+
+    :param srcfile: Python source file
+    """
     def __init__(self, srcfile):
         self.data = []
         super().__init__(srcfile)
@@ -520,36 +576,41 @@ class ClassTransform(Transform):
         methods = []
         for stmtnode in node.body:
             if isinstance(stmtnode, ast.FunctionDef):
-                methods.append(self.getsignature(stmtnode, clsuri))
+                methods.append(self.get_signature(stmtnode, clsuri))
         self.data.append({clsuri: methods})
 
 
-def _transform(srcfile):
-    try:
-        with open(srcfile) as f:
-            tree = ast.parse(f.read())
-        hasClassDef = False
-        for node in tree.body:
-            if isinstance(node, ast.ClassDef):
-                hasClassDef = True
-                break
-        if hasClassDef:
-            t = ClassTransform(srcfile)
-        else:
-            t = FuncTransform(srcfile)
-        print(t.datafile)
-    except FileNotFoundError:
-        print("Failed to find %s." % srcfile, file=sys.stderr)
-    except EmptyOutput:
-        print("Skipped %s." % srcfile, file=sys.stderr)
-    except Exception as e:
-        print("Failed to process %s." % srcfile, file=sys.stderr)
-        print(e, file=sys.stderr)
+def json_extract_code(path):
+    """
+    Convert Python source code to JSON. The path argument can be either
+    a Python source file or a diretory. In latter case, all Python source
+    files in that directory (including its subdirs) are converted.
 
-
-def transform(path):
+    :param path: path for a Python file or a directory
+    """
+    def _json_extract_code(srcfile):
+        try:
+            with open(srcfile) as f:
+                tree = ast.parse(f.read())
+            hasClassDef = False
+            for node in tree.body:
+                if isinstance(node, ast.ClassDef):
+                    hasClassDef = True
+                    break
+            if hasClassDef:
+                t = TransformClass(srcfile)
+            else:
+                t = TransformFunc(srcfile)
+            print(t.datafile)
+        except FileNotFoundError:
+            print("Failed to find %s." % srcfile, file=sys.stderr)
+        except EmptyJSONData:
+            print("Skipped %s." % srcfile, file=sys.stderr)
+        except Exception as e:
+            print("Failed to process %s." % srcfile, file=sys.stderr)
+            print(e, file=sys.stderr)
     if os.path.isfile(path):
-        _transform(path)
+        _json_extract_code(path)
     elif os.path.isdir(path):
         for root, _, files in os.walk(path):
             for filename in files:
@@ -557,9 +618,23 @@ def transform(path):
                 if suffix != ".py":
                     continue
                 filepath = root + "/" + filename
-                _transform(filepath)
+                _json_extract_code(filepath)
     else:
         print("%s is not a regular file or directory." % path, file=sys.stderr)
+
+
+def test_json_extract_code():
+    """
+    Function to test extracting json from code.  
+
+    Note: since json_extract_code() doesn't return any value. It outputs the
+    JSON file(s) it generates on stdout. user is responsible to check the
+    contents of the files.
+    """
+    srcfile1 = "model_tf/raw/27_byte_net.py"
+    srcfile2 = "model_tf/raw/6_encoder_gru.py"
+    json_extract_code(srcfile1) 
+    json_extract_code(srcfile2) 
 
 def test_json_conversion():
     """
