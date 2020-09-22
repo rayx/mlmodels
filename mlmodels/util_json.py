@@ -411,7 +411,7 @@ def json_csv_to_json(file_csv="", out_path="dataset/"):
     return dicts
 
 
-class EmptyJSONData(Exception):
+class _EmptyJSONData(Exception):
     """
     The generated json data contains nothing. This may occur if user passes
     a Python file containing no function or class defintion.
@@ -419,12 +419,15 @@ class EmptyJSONData(Exception):
     pass
 
 
-class TransformBase(ast.NodeVisitor):
+class _ParserBase(ast.NodeVisitor):
     """
-    This is an abstract class.
+    This is an abstract class. It has two subclasses: _ExtractFunc, which
+    extracts JSON from function definitions, and _ExtractClass, which
+    extracts JSON from class defintions. This class provides common functions
+    used by the two subclasses.
 
     :param srcfile: path of Python source file
-    :raises EmptyJSONData: the generated json data contains nothing
+    :raises _EmptyJSONData: the generated json data contains nothing
     """
     def __init__(self, srcfile):
         self.srcfile = os.path.abspath(srcfile)
@@ -433,7 +436,7 @@ class TransformBase(ast.NodeVisitor):
             self.tree = ast.parse(f.read())
         self.visit(self.tree)
         if not self.data:
-            raise EmptyJSONData()
+            raise _EmptyJSONData()
         self.datafile = os.path.splitext(self.srcfile)[0] + ".json"
         with open(self.datafile, 'w') as f:
             output = json.dumps(self.data, indent=4) + '\n'
@@ -536,10 +539,11 @@ class TransformBase(ast.NodeVisitor):
         return text
 
 
-class TransformFunc(TransformBase):
+class _ExtractFunc(_ParserBase):
     """
     The class generate JSON data for all functions defined in a Python
-    source file.
+    source file. It works by looking method defintions in a file and
+    generates JSON based on those methods' signatures.
 
     :param srcfile: Python source file
     """
@@ -553,10 +557,11 @@ class TransformFunc(TransformBase):
                 self.data.append(self.get_signature(stmtnode, self.srcfile))
 
 
-class TransformClass(TransformBase):
+class _ExtractClass(_ParserBase):
     """
     The class generate JSON data for all classes defined in a Python
-    source file.
+    source file. It works by looking for method defintions in a class
+    and generates JSON based on those methods' signatures.
 
     :param srcfile: Python source file
     """
@@ -575,7 +580,7 @@ class TransformClass(TransformBase):
         self.data.append({clsuri: methods})
 
 
-def transform_files_to_json(path):
+def json_extract_code(path):
     """
     Convert Python source code to JSON. The path argument can be either
     a Python source file or a diretory. In latter case, all Python source
@@ -583,7 +588,7 @@ def transform_files_to_json(path):
 
     :param path: path for a Python file or a directory
     """
-    def _transform_file_to_json(srcfile):
+    def _json_extract_code(srcfile):
         try:
             with open(srcfile) as f:
                 tree = ast.parse(f.read())
@@ -593,19 +598,19 @@ def transform_files_to_json(path):
                     hasClassDef = True
                     break
             if hasClassDef:
-                t = TransformClass(srcfile)
+                t = _ExtractClass(srcfile)
             else:
-                t = TransformFunc(srcfile)
+                t = _ExtractFunc(srcfile)
             print(t.datafile)
         except FileNotFoundError:
             print("Failed to find %s." % srcfile, file=sys.stderr)
-        except EmptyJSONData:
+        except _EmptyJSONData:
             print("Skipped %s." % srcfile, file=sys.stderr)
         except Exception as e:
             print("Failed to process %s." % srcfile, file=sys.stderr)
             print(e, file=sys.stderr)
     if os.path.isfile(path):
-        _transform_file_to_json(path)
+        _json_extract_code(path)
     elif os.path.isdir(path):
         for root, _, files in os.walk(path):
             for filename in files:
@@ -613,9 +618,23 @@ def transform_files_to_json(path):
                 if suffix != ".py":
                     continue
                 filepath = root + "/" + filename
-                _transform_file_to_json(filepath)
+                _json_extract_code(filepath)
     else:
         print("%s is not a regular file or directory." % path, file=sys.stderr)
+
+
+def test_json_extract_code():
+    """
+    Function to test extracting json from code.
+
+    Note: since json_extract_code() doesn't return any value. It outputs the
+    JSON file(s) it generates on stdout. user is responsible to check the
+    contents of the files.
+    """
+    srcfile1 = "model_tf/raw/27_byte_net.py"
+    srcfile2 = "model_tf/raw/6_encoder_gru.py"
+    json_extract_code(srcfile1)
+    json_extract_code(srcfile2)
 
 def test_json_conversion():
     """
